@@ -1,5 +1,5 @@
-#ifndef INPUTS_H
-#define INPUTS_H
+#ifndef __INPUTS_H__
+#define __INPUTS_H__
 
 namespace Inputs
 {

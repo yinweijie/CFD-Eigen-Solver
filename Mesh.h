@@ -1,5 +1,5 @@
-#ifndef MESH_H
-#define MESH_H
+#ifndef __MESH_H__
+#define __MESH_H__
 
 #include <eigen3/Eigen/Dense>
 #include "Inputs.h"
@@ -15,16 +15,12 @@ class Mesh
 private:
     // 网格x方向面坐标
     VectorXd xFace;
-
     // 网格x方向中心坐标
     VectorXd xCentroid;
-
     // d_LP, d_PR：网格中心与左右相邻网格中心举例
     VectorXd d_LP, d_PR;
-
     // k*A/d
     VectorXd DA_L, DA_R;
-
     // 网格体积
     VectorXd V;
 
@@ -98,4 +94,5 @@ void Mesh<N>::initMesh(double L)
         V[i] = A * (xFace[i+1] - xFace[i]);
     }
 }
+
 #endif
