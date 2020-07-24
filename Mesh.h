@@ -1,7 +1,7 @@
 #ifndef __MESH_H__
 #define __MESH_H__
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include "Inputs.h"
 
 using Eigen::MatrixXd;
@@ -9,7 +9,6 @@ using Eigen::VectorXd;
 
 // N: 网格数
 // L: 计算域长度
-template <int N>
 class Mesh
 {
 private:
@@ -23,12 +22,13 @@ private:
     VectorXd DA_L, DA_R;
     // 网格体积
     VectorXd V;
-
+    // 网格数量
+    int N;
 private:
     // 初始化网格
-    void initMesh(double L);
+    void initMesh(double L, int N);
 public:
-    Mesh(double L)
+    Mesh(double L, int N) : N(N)
     {
         xFace = VectorXd(N + 1);
         xCentroid = VectorXd(N);
@@ -38,16 +38,16 @@ public:
         DA_R = VectorXd(N);
         V = VectorXd(N);
 
-        initMesh(L);
+        initMesh(L, N);
     }
 
     const VectorXd& get_DA_L() const { return DA_L; }
     const VectorXd& get_DA_R() const { return DA_R; }
     const VectorXd& get_V() const { return V; }
+    int get_N() const { return N; }
 };
 
-template <int N>
-void Mesh<N>::initMesh(double L)
+void Mesh::initMesh(double L, int N)
 {
     using namespace Inputs;
 

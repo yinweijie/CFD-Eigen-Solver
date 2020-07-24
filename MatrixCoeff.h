@@ -8,7 +8,6 @@
 using namespace std;
 
 // N: 网格数
-template <int N>
 class MatrixCoeff
 {
 private:
@@ -20,11 +19,13 @@ private:
 
 private:
 // Matrix系数初始化
-void initMatrix(const Mesh<N>* mesh);
+void initMatrix(const Mesh* mesh);
 
 public:
-    MatrixCoeff(const Mesh<N>* mesh)
+    MatrixCoeff(const Mesh* mesh)
     {
+        int N = mesh->get_N();
+
         aL = VectorXd(N);
         aR = VectorXd(N);
         aP = VectorXd(N);
@@ -44,14 +45,14 @@ public:
 };
 
 // a_{p} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}
-template <int N>
-void MatrixCoeff<N>::initMatrix(const Mesh<N>* mesh)
+void MatrixCoeff::initMatrix(const Mesh* mesh)
 {
     using namespace Inputs;
 
     const VectorXd& DA_L = mesh->get_DA_L();
     const VectorXd& DA_R = mesh->get_DA_R();
     const VectorXd& V = mesh->get_V();
+    int N = mesh->get_N();
 
     aL = DA_L;
     aL[0] = 0; // 左边界系数

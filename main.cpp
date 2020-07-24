@@ -1,5 +1,5 @@
 #include <iostream>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include "Inputs.h"
 #include "Mesh.h"
 #include "MatrixCoeff.h"
@@ -8,15 +8,16 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using namespace std;
 
-
- 
 int main()
 {
+    // 读取数据
+
+
     // 创建网格
-    Mesh<Inputs::N>* mesh = new Mesh<Inputs::N>(Inputs::L);
+    Mesh* mesh = new Mesh(Inputs::L, Inputs::N);
 
     // 初始化矩阵
-    MatrixCoeff<Inputs::N>* MCoeff = new MatrixCoeff<Inputs::N>(mesh);
+    MatrixCoeff* MCoeff = new MatrixCoeff(mesh);
 
     // 获取矩阵
     MatrixXd& A_m = MCoeff->get_A_m();
