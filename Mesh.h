@@ -20,6 +20,10 @@ private:
     VectorXd d_LP, d_PR;
     // k*A/d
     VectorXd DA_L, DA_R;
+    // F = rho * cp * U * A
+    VectorXd F_l, F_r;
+    // 网格左/右面速度
+    VectorXd U_l, U_r;
     // 网格体积
     VectorXd V;
     // 网格数量
@@ -36,6 +40,10 @@ public:
         d_PR = VectorXd(N);
         DA_L = VectorXd(N);
         DA_R = VectorXd(N);
+        F_l = VectorXd(N);
+        F_r = VectorXd(N);
+        U_l = VectorXd(N);
+        U_r = VectorXd(N);
         V = VectorXd(N);
 
         initMesh(L, N);
@@ -43,6 +51,8 @@ public:
 
     const VectorXd& get_DA_L() const { return DA_L; }
     const VectorXd& get_DA_R() const { return DA_R; }
+    const VectorXd& get_F_l() const { return F_l; }
+    const VectorXd& get_F_r() const { return F_r; }
     const VectorXd& get_V() const { return V; }
     int get_N() const { return N; }
 };
@@ -89,6 +99,12 @@ void Mesh::initMesh(double L, int N)
 
         DA_L[i] = k * A / d_LP[i];
         DA_R[i] = k * A / d_PR[i];
+
+        // 这里速度是均匀的
+        U_l.setConstant(U);
+        U_r.setConstant(U);
+        F_l = rho * cp * U_l * A;
+        F_r = rho * cp * U_r * A;
 
         // 网格体积 = faceArea * dx
         V[i] = A * (xFace[i+1] - xFace[i]);

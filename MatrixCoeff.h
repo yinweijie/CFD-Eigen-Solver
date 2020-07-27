@@ -51,24 +51,26 @@ void MatrixCoeff::initMatrix(const Mesh* mesh)
 
     const VectorXd& DA_L = mesh->get_DA_L();
     const VectorXd& DA_R = mesh->get_DA_R();
+    const VectorXd& F_l = mesh->get_F_l();
+    const VectorXd& F_r = mesh->get_F_r();
     const VectorXd& V = mesh->get_V();
     int N = mesh->get_N();
 
-    aL = DA_L;
+    aL = DA_L + F_l.cwiseMax(VectorXd::Zero(N));
     aL[0] = 0; // 左边界系数
 
-    aR = DA_R;
+    aR = DA_R + (-F_r).cwiseMax(VectorXd::Zero(N));
     aR[N-1] = 0; // 右边界系数
 
     Sp = VectorXd::Zero(N);
-    Sp[0] = -2 * DA_L[0]; // 左边界引入系数矩阵的不规则项
-    Sp[N-1] = -2 * DA_R[N-1]; // 右边界引入系数矩阵的不规则项 
+    Sp[0] = -(2*DA_L[0] + max(F_l[0], 0.0)); // 左边界引入系数矩阵的不规则项
+    Sp[N-1] = -(2*DA_R[N-1] + max(-F_r[0], 0.0)); // 右边界引入系数矩阵的不规则项 
 
-    aP = aL + aR - Sp;
+    aP = aL + aR - Sp + (F_r - F_l);
 
     Su = S_bar * V;
-    Su[0] = T_A*(2*DA_L[0]) + S_bar * V[0];
-    Su[N-1] = T_B*(2*DA_R[N-1]) + S_bar * V[N-1];
+    Su[0] = T_A*(2*DA_L[0] + max(F_l[0], 0.0)) + S_bar * V[0];
+    Su[N-1] = T_B*(2*DA_R[N-1] + max(-F_r[N-1], 0.0)) + S_bar * V[N-1];
 
     for(int i = 0; i < N; i++)
     {

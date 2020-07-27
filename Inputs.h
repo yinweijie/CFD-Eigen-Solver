@@ -43,7 +43,7 @@ namespace Inputs
     double cp = 1000;
 
     // 流体速度
-    double U = 0.01;
+    double U = 0.3;
 }
 
 #endif
