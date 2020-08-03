@@ -43,7 +43,10 @@ namespace Inputs
     double cp = 1000;
 
     // 流体速度
-    double U = 0.3;
+    double U = 0.0;
+
+    // 左边界热流密度 (W/m^2)
+    double q_w = 100;
 }
 
 #endif
