@@ -1,0 +1,1 @@
+基于[Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) 3.3.7开发的简易CFD Sovler，可用于熟悉CFD基本理论和实现过程。
