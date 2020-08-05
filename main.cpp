@@ -11,15 +11,16 @@ using namespace std;
 int main()
 {
     // implement 2D solver
-    
-    // 读取数据
 
+    // 读取数据
+    Inputs* inputs = new Inputs("Inputs.dat");
+    inputs->initInputs();
 
     // 创建网格
-    Mesh* mesh = new Mesh(Inputs::L, Inputs::N);
+    Mesh* mesh = new Mesh(inputs);
 
     // 初始化矩阵
-    MatrixCoeff* MCoeff = new MatrixCoeff(mesh);
+    MatrixCoeff* MCoeff = new MatrixCoeff(mesh, inputs);
 
     // 获取矩阵
     MatrixXd& A_m = MCoeff->get_A_m();
@@ -34,4 +35,5 @@ int main()
 
     delete MCoeff;
     delete mesh;
+    delete inputs;
 }

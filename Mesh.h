@@ -30,9 +30,9 @@ private:
     int N;
 private:
     // 初始化网格
-    void initMesh(double L, int N);
+    void initMesh(const Inputs* inputs);
 public:
-    Mesh(double L, int N) : N(N)
+    Mesh(const Inputs* inputs) : N(inputs->N)
     {
         xFace = VectorXd(N + 1);
         xCentroid = VectorXd(N);
@@ -46,7 +46,7 @@ public:
         U_r = VectorXd(N);
         V = VectorXd(N);
 
-        initMesh(L, N);
+        initMesh(inputs);
     }
 
     const VectorXd& get_DA_L() const { return DA_L; }
@@ -57,12 +57,12 @@ public:
     int get_N() const { return N; }
 };
 
-void Mesh::initMesh(double L, int N)
+void Mesh::initMesh(const Inputs* inputs)
 {
-    using namespace Inputs;
+    // using namespace Inputs;
 
     // x方向网格长度
-    double dx = L / N;
+    double dx = inputs->L / N;
 
     // 网格面x坐标
     for(int i = 0; i <= N; i++)
@@ -97,17 +97,17 @@ void Mesh::initMesh(double L, int N)
             d_PR[i] = xCentroid[i+1] - xCentroid[i];
         }
 
-        DA_L[i] = k * A / d_LP[i];
-        DA_R[i] = k * A / d_PR[i];
+        DA_L[i] = inputs->k * inputs->A / d_LP[i];
+        DA_R[i] = inputs->k * inputs->A / d_PR[i];
 
         // 这里速度是均匀的
-        U_l.setConstant(U);
-        U_r.setConstant(U);
-        F_l = rho * cp * U_l * A;
-        F_r = rho * cp * U_r * A;
+        U_l.setConstant(inputs->U);
+        U_r.setConstant(inputs->U);
+        F_l = inputs->rho * inputs->cp * U_l * inputs->A;
+        F_r = inputs->rho * inputs->cp * U_r * inputs->A;
 
         // 网格体积 = faceArea * dx
-        V[i] = A * (xFace[i+1] - xFace[i]);
+        V[i] = inputs->A * (xFace[i+1] - xFace[i]);
     }
 }
 

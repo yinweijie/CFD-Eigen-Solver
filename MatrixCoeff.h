@@ -19,10 +19,10 @@ private:
 
 private:
 // Matrix系数初始化
-void initMatrix(const Mesh* mesh);
+void initMatrix(const Mesh* mesh, const Inputs* inputs);
 
 public:
-    MatrixCoeff(const Mesh* mesh)
+    MatrixCoeff(const Mesh* mesh, const Inputs* inputs)
     {
         int N = mesh->get_N();
 
@@ -36,7 +36,7 @@ public:
         b_m = VectorXd(N);
         x = VectorXd (N);
         
-        initMatrix(mesh);
+        initMatrix(mesh, inputs);
     }
 
     MatrixXd& get_A_m() { return A_m; }
@@ -45,9 +45,9 @@ public:
 };
 
 // a_{p} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}
-void MatrixCoeff::initMatrix(const Mesh* mesh)
+void MatrixCoeff::initMatrix(const Mesh* mesh, const Inputs* inputs)
 {
-    using namespace Inputs;
+    // using namespace Inputs;
 
     const VectorXd& DA_L = mesh->get_DA_L();
     const VectorXd& DA_R = mesh->get_DA_R();
@@ -65,13 +65,13 @@ void MatrixCoeff::initMatrix(const Mesh* mesh)
     Sp = VectorXd::Zero(N);
     // 黎曼边界不会引入Sp
     // Sp[0] = -(2*DA_L[0] + max(F_l[0], 0.0)); // 左边界引入系数矩阵的不规则项
-    // Sp[N-1] = -(2*DA_R[N-1] + max(-F_r[0], 0.0)); // 右边界引入系数矩阵的不规则项 
+    Sp[N-1] = -(2*DA_R[N-1] + max(-F_r[0], 0.0)); // 右边界引入系数矩阵的不规则项 
 
     aP = aL + aR - Sp + (F_r - F_l);
 
-    Su = S_bar * V;
-    Su[0] = /*T_A*(2*DA_L[0] + max(F_l[0], 0.0))*/-q_w*A  + S_bar * V[0]; // 左边界使用黎曼边界条件
-    Su[N-1] = T_B*(2*DA_R[N-1] + max(-F_r[N-1], 0.0)) + S_bar * V[N-1]; // 右边界用狄拉克边界条件
+    Su = inputs->S_bar * V;
+    Su[0] = -inputs->q_w*inputs->A  + inputs->S_bar * V[0]; // 左边界使用黎曼边界条件
+    Su[N-1] = inputs->T_B*(2*DA_R[N-1] + max(-F_r[N-1], 0.0)) + inputs->S_bar * V[N-1]; // 右边界用狄拉克边界条件
 
     for(int i = 0; i < N; i++)
     {
