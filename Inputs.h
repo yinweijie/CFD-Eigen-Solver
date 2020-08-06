@@ -56,42 +56,4 @@ public:
     void initInputs();
 };
 
-// namespace Inputs
-// {
-//     // Thermal Conductivity of the bar (W/mK)
-//     double k;
-    
-//     // Cross-sectional Area of the bar (m2)
-//     double A;
-
-//     double L;
-
-//     // 计算域X，Y，Z方向长度 (m)
-//     Geometry geometry;
-    
-//     // Number of cells in the mesh
-//     int N;
-    
-//     // Temperature at the left hand side of the bar (deg C)
-//     double T_A;
-    
-//     // Temperature at the left hand side of the bar (deg C)
-//     double T_B;
-    
-//     // Heat source per unit volume (W/m3)
-//     double S_bar;
-
-//     // 密度 kg/m^3
-//     double rho;
-
-//     // 比热容 J/kg/k
-//     double cp;
-
-//     // 流体速度
-//     double U;
-
-//     // 左边界热流密度 (W/m^2)
-//     double q_w;
-// }
-
 #endif
