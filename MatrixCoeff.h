@@ -17,31 +17,32 @@ private:
     VectorXd b_m;
     VectorXd x;
 
-private:
-// Matrix系数初始化
-void initMatrix(const Mesh* mesh, const Inputs* inputs);
-
 public:
-    MatrixCoeff(const Mesh* mesh, const Inputs* inputs)
+    MatrixCoeff(const Mesh* mesh, const Boundary& boundary, const Source& source)
     {
         int N = mesh->get_N();
 
-        aL = VectorXd(N);
-        aR = VectorXd(N);
-        aP = VectorXd(N);
-        Sp = VectorXd(N);
-        Su = VectorXd(N);
+        aL = VectorXd::Zero(N);
+        aR = VectorXd::Zero(N);
+        aP = VectorXd::Zero(N);
+        Sp = VectorXd::Zero(N);
+        Su = VectorXd::Zero(N);
 
-        A_m = MatrixXd(N, N);
-        b_m = VectorXd(N);
-        x = VectorXd (N);
-        
-        initMatrix(mesh, inputs);
+        A_m = MatrixXd::Zero(N, N);
+        b_m = VectorXd::Zero(N);
+        x = VectorXd::Zero(N);
     }
 
     MatrixXd& get_A_m() { return A_m; }
     VectorXd& get_b_m() { return b_m; }
     VectorXd& get_x() { return x; }
+
+    MatrixCoeff& addConvectionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
+    MatrixCoeff& addDiffusionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
+    MatrixCoeff& addSourceTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
+    
+    // Matrix系数初始化
+    void initMatrix(const Mesh* mesh, const Boundary& boundary, const Source& source);
 };
 
 #endif

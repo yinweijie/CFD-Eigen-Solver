@@ -7,40 +7,37 @@ Inputs::Inputs(const std::string& FileName)
 
 void Inputs::initInputs()
 {
-    // Thermal Conductivity of the bar (W/mK)
-    k = 100;
-    
-    // Cross-sectional Area of the bar (m2)
-    A = 0.1;
-
-    L = 5;
+    // Number of cells in the mesh
+    Nx = 5;
+    Ny = 1;
+    Nz = 1;
 
     // 计算域X，Y，Z方向长度 (m)
     geometry.XLen = 5;
-    geometry.YLen = 5;
-    geometry.ZLen = 5;
-    
-    // Number of cells in the mesh
-    N = 5;
-    
-    // Temperature at the left hand side of the bar (deg C)
-    T_A = 100;
-    
-    // Temperature at the left hand side of the bar (deg C)
-    T_B = 200;
-    
-    // Heat source per unit volume (W/m3)
-    S_bar = 1000;
+    geometry.YLen = 1;
+    geometry.ZLen = 0.1;
 
+    // Thermal Conductivity of the bar (W/mK)
+    physcial_properties.k = 100;
     // 密度 kg/m^3
-    rho = 1.0;
-
+    physcial_properties.rho = 1.0;
     // 比热容 J/kg/k
-    cp = 1000;
+    physcial_properties.cp = 1000;
+    
+    // Temperature at the left boundary (deg C)
+    boundary.T_left = 100;
+    // Temperature at the right boundary (deg C)
+    boundary.T_right = 200;
+    // Temperature at the bottom boundary (deg C)
+    boundary.T_bottom = 150;
+    // Temperature at the top boundary (deg C)
+    boundary.T_top = 250;
+    // 左边界热流密度 (W/m^2)
+    boundary.q_w = 100;
 
     // 流体速度
-    U = 0.0;
-
-    // 左边界热流密度 (W/m^2)
-    q_w = 100;
+    boundary.U = 0.0;
+    
+    // Heat source per unit volume (W/m3)
+    source.S_bar = 1000;
 }
