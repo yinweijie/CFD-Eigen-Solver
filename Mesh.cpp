@@ -43,9 +43,6 @@ void Mesh::initMesh(const Inputs* inputs)
         yCentroid[i] = 0.5 * (yFace[iy] + yFace[iy+1]);
         zCentroid[i] = 0.5 * (zFace[iz] + zFace[iz+1]);
     }
-    // std::cout << "xCentroid: " << std::endl << xCentroid << std::endl;
-    // std::cout << "yCentroid: " << std::endl << yCentroid << std::endl;
-    // std::cout << "zCentroid: " << std::endl << zCentroid << std::endl;
 
     // 网格中心相关量
     for(int i = 0; i < N; i++)
@@ -76,6 +73,7 @@ void Mesh::initMesh(const Inputs* inputs)
         int i_t = top_of(i);
         int i_b = bottom_of(i);
 
+        // 未特殊处理的网格在这里统一赋值
         if(!flag_d_LP[i]) (d_LP[i] = xCentroid[i] - xCentroid[i_l], flag_d_LP[i]);
         if(!flag_d_PR[i]) (d_PR[i] = xCentroid[i_r] - xCentroid[i], flag_d_PR[i]);
         if(!flag_d_PT[i]) (d_PT[i] = yCentroid[i_t] - yCentroid[i], flag_d_PT[i]);

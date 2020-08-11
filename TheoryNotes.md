@@ -304,7 +304,7 @@ $$
 
 - 内部点
 
-如果流动是从左到右，左边的对流项可以写为：
+如果流动是**从左到右**，左边的对流项可以写为：
 $$
 F_{r} T_{P}-F_{l} T_{L}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-D_{l} A_{l}\left(T_{P}-T_{L}\right)+\bar{S} V
 $$
@@ -314,7 +314,7 @@ $$
 $$
 T_{P} \underbrace{\left[D_{l} A_{l}+F_{l}+D_{r} A_{r}+\left(F_{r}-F_{l}\right)\right]}_{a_{p}}=T_{L} \underbrace{\left[D_{l} A_{l}+F_{l}\right]}_{a_{L}}+T_{R} \underbrace{\left[D_{r} A_{r}\right]}_{a_{R}}+\underbrace{\bar{S}_{V}}_{S_{u}}
 $$
-如果流动从右到左：
+如果流动**从右到左**：
 $$
 T_{P} \underbrace{\left[D_{l} A_{l}+D_{r} A_{r}-F_{r}+\left(F_{r}-F_{l}\right)\right]}_{a_{P}}=T_{L} \underbrace{\left[D_{l} A_{l}\right]}_{a_{L}}+T_{R} \underbrace{\left[D_{l} A_{l}-F_{r}\right]}_{a_{R}}+\underbrace{\bar{S} V}_{S_{u}}
 $$
@@ -547,5 +547,88 @@ $$
 
 ## 二维扩散
 
+- 系数总结
 
+二维扩散，两种边界条件的系数如下：
+
+**Dirichlet Boundary Condition (2D)**:
+$$
+\begin{array}{lcccccc} 
+\hline
+& a_{L} & a_{R} & a_{B} & a_{T} & S_{p} & S_{u} \\
+\hline 
+\text { Interior } & D_{L} A_{L} & D_{R} A_{R} & D_{B} A_{B} & D_{T} A_{T} & 0 & \bar{S} V \\
+\text { Boundary }(\mathrm{L}) & 0 & D_{R} A_{R} & D_{B} A_{B} & D_{T} A_{T} & -2 D_{L} A_{L} & T_{\text {wall }}\left(2 D_{L} A_{L}\right)+\bar{S} V \\
+\text { Boundary }(\mathrm{R}) & D_{L} A_{L} & 0 & D_{B} A_{B} & D_{T} A_{T} & -2 D_{R} A_{R} & T_{\text {wall }}\left(2 D_{R} A_{R}\right)+\bar{S} V \\
+\text { Boundary }(\mathrm{B}) & D_{L} A_{L} & D_{R} A_{R} & 0 & D_{T} A_{T} & -2 D_{B} A_{B} & T_{\text {wall }}\left(2 D_{B} A_{B}\right)+\bar{S} V \\
+\text { Boundary }(\mathrm{T}) & D_{L} A_{L} & D_{R} A_{R} & D_{T} A_{T} & 0 & -2 D_{T} A_{T} & T_{\text {wall }}\left(2 D_{T} A_{T}\right)+\bar{S} V \\
+\hline
+\end{array}
+$$
+**Neumann Boundary Condition (2D)**:
+$$
+\begin{array}{lcccccc} 
+\hline
+& a_{L} & a_{R} & a_{B} & a_{T} & S_{p} & S_{u} \\
+\hline 
+\text { Interior } & D_{L} A_{L} & D_{R} A_{R} & D_{B} A_{B} & D_{T} A_{T} & 0 & \bar{S} V \\
+\text { Boundary }(\mathrm{L}) & 0 & D_{R} A_{R} & D_{B} A_{B} & D_{T} A_{T} & 0 & -q_{\text {wall }} A_{l}+\bar{S} V \\
+\text { Boundary }(\mathrm{R}) & D_{L} A_{L} & 0 & D_{B} A_{B} & D_{T} A_{T} & 0 & -q_{\text {wall }} A_{r}+\bar{S} V \\
+\text { Boundary }(\mathrm{B}) & D_{L} A_{L} & D_{R} A_{R} & 0 & D_{T} A_{T} & 0 & -q_{\text {wall }} A_{B}+\bar{S} V \\
+\text { Boundary }(\mathrm{T}) & D_{L} A_{L} & D_{R} A_{R} & D_{T} A_{T} & 0 & 0 & -q_{\text {wall }} A_{T}+\bar{S} V \\
+\hline
+\end{array}
+$$
+
+$$
+a_{p}=a_{L}+a_{R}+a_{T}+a_{B}-S_{p}
+$$
+
+**Summation Notation**:
+$$
+\begin{array}{lccc}
+\hline
+\text { Face Type } & a_{P} & a_{N} & S_{u} \\
+\hline \text { Interior } & \frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}| & \frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}| & 0 \\
+\text { Dirichlet } & \frac{k_{w} A_{w}}{\left|\boldsymbol{d}_{L P}\right| / 2}|\hat{\boldsymbol{n}}| & 0 & T_{w}\left(\frac{k_{w} A_{w}}{\left|\boldsymbol{d}_{L P}\right| / 2}|\hat{\boldsymbol{n}}|\right) \\
+\text { Neumann } & 0 & 0 & -q_{w} A_{w} \\
+\hline
+\end{array}
+$$
+为了对比说明，将前面一维对流-扩散也放在这里：
+$$
+\begin{array}{cccc} 
+\hline
+& a_{L} & a_{R} & S_{p} & S_{u} \\
+\hline \text { Left } & 0 & D_{r} A_{r} & -\left(2 D_{l} A_{l}\right. & T_{A}\left(2 D_{l} A_{l}\right. \\
+& & +\max \left(-F_{r}, 0\right) & \left.+\max \left(F_{l}, 0\right)\right) & \left.+\max \left(F_{l}, 0\right)\right)+\bar{S} V \\
+\hline \text { Interior } & D_{l} A_{l} & D_{r} A_{r} & 0 & \bar{S} V \\
+& +\max \left(F_{l}, 0\right) & +\max \left(-F_{r}, 0\right) & \\
+\hline \text { Right } & D_{l} A_{l}+ & 0 & -\left(2 D_{r} A_{r}\right. & T_{B}\left(2 D_{r} A_{r}\right. \\
+& \max \left(0, F_{l}\right) & & \left.+\max \left(-F_{r}, 0\right)\right) & \left.+\max \left(-F_{r}, 0\right)\right)+\bar{S} V \\
+\hline
+\end{array}
+$$
+
+$$
+a_{P}=a_{L}+a_{R}+\left(F_{r}-F_{l}\right)-S_{p}
+$$
+
+- 编程实现
+
+从上面表格中可以总结这样一个规律：
+
+内部点只会引入系数$a_P和a_N$，**对流项**引入$a_N$为$\max(F, 0)$相关系数，引入$a_P=a_{L}+a_{R}+...\left(F_{r}-F_{l}\right)+$$...-S_p$，**扩散项**引入$a_N$的为$DA$相关系数，引入$a_{p}=a_{L}+a_{R}+...-S_p$；
+
+狄拉克边界不会引入$a_N$，**对流项**会引入$S_P=-\max(F,0)$相关量，$S_u=T_N(\max(F,0))$相关量，**扩散项**会引入$S_P=-2DA$和$S_u=T_N(2DA)$。也就是说，对于壁面网格，靠壁面那一侧的$a_N$系数为$0$，被替换为$-S_p$，并且还会引入源项$S_u$，最终对流项和扩散项的$a_P$与内部点形式相同，只需要注意边界那一侧的$a_N=0$，$-S_p$被额外引入；
+
+黎曼边界同样也不会引入$a_N$，同时也不会引入$S_p$，只会额外引入源项$S_u$；
+
+源项只会引入$S_u$。
+
+
+
+由于紧邻壁面的网格需要特殊处理，因此程序中`Mesh`类里封装了一些函数如`is_at_left_boundary`等用来判断网格是否为边壁网格；还分装了如`bottom_of`用来返回当前网格周围网格的编号。
+
+在`MatrixCoeff`类中，封装了三个成员函数`addConvectionTerm`、`addDiffusionTerm`和`addSourceTerm`将方程的对流、扩散和源项分别处理，这样可以只引入需要考虑的项。
 
