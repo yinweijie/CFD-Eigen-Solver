@@ -632,3 +632,12 @@ $$
 
 在`MatrixCoeff`类中，封装了三个成员函数`addConvectionTerm`、`addDiffusionTerm`和`addSourceTerm`将方程的对流、扩散和源项分别处理，这样可以只引入需要考虑的项。
 
+
+
+- 算例
+
+![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200811154409.png)
+
+![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200811154435.png)
+
+**注意**，我的程序中，y坐标是向上的，因此Top和Bottom与这里的正好相反，因此`Inputs`中`top`为150℃，`bottom`为250℃。
