@@ -7,21 +7,28 @@ void MatrixCoeff::initMatrix(const Mesh* mesh, const Boundary& boundary, const S
 
     for(int i = 0; i < N; i++)
     {
-        if(i == 0)
+        int i_l = mesh->left_of(i);
+        int i_r = mesh->right_of(i);
+        int i_t = mesh->top_of(i);
+        int i_b = mesh->bottom_of(i);
+
+        A_m(i, i) = aP[i];
+
+        if(!mesh->is_at_left_boundary(i))
         {
-            A_m(i, i) = aP[i];
-            A_m(i, i+1) = -aR[i];
+            A_m(i, i_l) = -aL[i];
         }
-        else if(i == N-1)
+        if(!mesh->is_at_right_boundary(i))
         {
-            A_m(i, i) = aP[i];
-            A_m(i, i-1) = -aL[i];
+            A_m(i, i_r) = -aR[i];
         }
-        else
+        if(!mesh->is_at_bottom_boundary(i))
         {
-            A_m(i, i) = aP[i];
-            A_m(i, i-1) = -aL[i];
-            A_m(i, i+1) = -aR[i];
+            A_m(i, i_b) = -aB[i];
+        }
+        if(!mesh->is_at_top_boundary(i))
+        {
+            A_m(i, i_t) = -aT[i];
         }
     }
 
@@ -40,6 +47,7 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm(const Mesh* mesh, const Boundary& bo
     double T_r = boundary.T_right;
     double T_b = boundary.T_bottom;
     double T_t = boundary.T_top;
+
     double q_w = boundary.q_w;
 
     double Ax = mesh->get_Ax();
@@ -48,22 +56,45 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm(const Mesh* mesh, const Boundary& bo
 
     const VectorXd& F_l = mesh->get_F_l();
     const VectorXd& F_r = mesh->get_F_r();
+    const VectorXd& F_b = mesh->get_F_b();
+    const VectorXd& F_t = mesh->get_F_t();
 
     int N = mesh->get_N();
 
     aL += F_l.cwiseMax(VectorXd::Zero(N));
-    aL[0] = 0; // 左边界系数
-
     aR += (-F_r).cwiseMax(VectorXd::Zero(N));
-    aR[N-1] = 0; // 右边界系数
+    aB += F_b.cwiseMax(VectorXd::Zero(N));
+    aT += (-F_t).cwiseMax(VectorXd::Zero(N));
 
-    // 黎曼边界不会引入Sp
-    // Sp[0] += -(max(F_l[0], 0.0)); // 左边界引入系数矩阵的不规则项
-    Sp[N-1] += -(max(-F_r[0], 0.0)); // 右边界引入系数矩阵的不规则项 
+    for(int i = 0; i < N; i++)
+    {
+        if(mesh->is_at_left_boundary(i))
+        {
+            aL[i] = 0; // 左边界
+            Sp[i] += -(max(F_l[i], 0.0));
+            Su[i] += T_l * max(F_l[i], 0.0);
+        }
+        if(mesh->is_at_right_boundary(i))
+        {
+            aR[i] = 0; // 右边界
+            Sp[i] += -(max(-F_r[i], 0.0));
+            Su[i] += T_r * max(-F_r[i], 0.0);
+        }
+        if(mesh->is_at_bottom_boundary(i))
+        {
+            aB[i] = 0; // 下边界
+            Sp[i] += -(max(F_b[i], 0.0));
+            Su[i] += T_b * max(F_b[i], 0.0);
+        }
+        if(mesh->is_at_top_boundary(i))
+        {
+            aT[i] = 0; // 上边界
+            Sp[i] += -(max(-F_t[i], 0.0));
+            Su[i] += T_t * max(-F_t[i], 0.0);
+        }
+    }
 
-    aP += aL + aR - Sp + (F_r - F_l);
-
-    Su[N-1] += T_r*(max(-F_r[N-1], 0.0)); // 右边界用狄拉克边界条件
+    aP += aL + aR + aB + aT - Sp + (F_r - F_l + F_t - F_b);
 
     return *this;
 }
@@ -88,19 +119,40 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm(const Mesh* mesh, const Boundary& bou
     int N = mesh->get_N();
 
     aL += DA_L;
-    aL[0] = 0; // 左边界系数
-
     aR += DA_R;
-    aR[N-1] = 0; // 右边界系数
+    aB += DA_B;
+    aT += DA_T;
 
-    // 黎曼边界不会引入Sp
-    // Sp[0] += (-2*DA_L[0]); // 左边界引入系数矩阵的不规则项
-    Sp[N-1] += (-2*DA_R[N-1]); // 右边界引入系数矩阵的不规则项 
+    for(int i = 0; i < N; i++)
+    {
+        if(mesh->is_at_left_boundary(i))
+        {
+            aL[i] = 0; // 左边界
+            Sp[i] += -2*DA_L[i];
+            Su[i] += T_l * 2*DA_L[i];
+            // Su[i] += -q_w*Ax; // 左边界使用黎曼边界条件
+        }
+        if(mesh->is_at_right_boundary(i))
+        {
+            aR[i] = 0; // 右边界
+            Sp[i] += -2*DA_R[i];
+            Su[i] += T_r * 2*DA_R[i];
+        }
+        if(mesh->is_at_bottom_boundary(i))
+        {
+            aB[i] = 0; // 下边界
+            Sp[i] += -2*DA_B[i];
+            Su[i] += T_b * 2*DA_B[i];
+        }
+        if(mesh->is_at_top_boundary(i))
+        {
+            aT[i] = 0; // 上边界
+            Sp[i] += -2*DA_T[i];
+            Su[i] += T_t * 2*DA_T[i];
+        }
+    }
 
-    aP += aL + aR - Sp;
-
-    Su[0] += -q_w*Ax; // 左边界使用黎曼边界条件
-    Su[N-1] += T_r*(2*DA_R[N-1]); // 右边界用狄拉克边界条件
+    aP += aL + aR + aB + aT - Sp;
 
     return *this;
 }

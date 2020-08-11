@@ -8,13 +8,13 @@ Inputs::Inputs(const std::string& FileName)
 void Inputs::initInputs()
 {
     // Number of cells in the mesh
-    Nx = 5;
-    Ny = 1;
+    Nx = 4;
+    Ny = 4;
     Nz = 1;
 
     // 计算域X，Y，Z方向长度 (m)
-    geometry.XLen = 5;
-    geometry.YLen = 1;
+    geometry.XLen = 4;
+    geometry.YLen = 4;
     geometry.ZLen = 0.1;
 
     // Thermal Conductivity of the bar (W/mK)
@@ -29,9 +29,9 @@ void Inputs::initInputs()
     // Temperature at the right boundary (deg C)
     boundary.T_right = 200;
     // Temperature at the bottom boundary (deg C)
-    boundary.T_bottom = 150;
+    boundary.T_bottom = 250;
     // Temperature at the top boundary (deg C)
-    boundary.T_top = 250;
+    boundary.T_top = 150;
     // 左边界热流密度 (W/m^2)
     boundary.q_w = 100;
 

@@ -11,7 +11,7 @@ using namespace std;
 class MatrixCoeff
 {
 private:
-    VectorXd aL, aR, aP, Sp, Su;
+    VectorXd aL, aR, aB, aT, aP, Sp, Su;
 
     MatrixXd A_m;
     VectorXd b_m;
@@ -24,7 +24,10 @@ public:
 
         aL = VectorXd::Zero(N);
         aR = VectorXd::Zero(N);
+        aB = VectorXd::Zero(N);
+        aT = VectorXd::Zero(N);
         aP = VectorXd::Zero(N);
+
         Sp = VectorXd::Zero(N);
         Su = VectorXd::Zero(N);
 
