@@ -1,10 +1,31 @@
 #include "MatrixCoeff.h"
+#include "MatrixWrapper.h"
 
-// a_{p} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}
-void MatrixCoeff::initMatrix(const Mesh* mesh, const Boundary& boundary, const Source& source)
+// a_p T_p = a_L T_L + a_R T_R + ... + S_{u}
+void MatrixCoeff::initDenseMatrix()
 {
-    int N = mesh->get_N();
+    init(&dense_matrix_wrapper);
 
+    b_m = Su;
+}
+
+void MatrixCoeff::initSparseMatrix()
+{
+    SparseMatrix<double> A_m = sparse_matrix_wrapper.getMatrix();
+
+    // 每列预留5个元素的空间，用于插入
+    // ref. http://eigen.tuxfamily.org/dox/group__TutorialSparse.html - Filling a sparse matrix
+    A_m.reserve(VectorXi::Constant(N, 5));
+
+    init(&sparse_matrix_wrapper);
+
+    A_m.makeCompressed(); // optional
+
+    b_m = Su;
+}
+
+void MatrixCoeff::init(MatrixInterface* matrix)
+{
     for(int i = 0; i < N; i++)
     {
         int i_l = mesh->left_of(i);
@@ -12,43 +33,35 @@ void MatrixCoeff::initMatrix(const Mesh* mesh, const Boundary& boundary, const S
         int i_t = mesh->top_of(i);
         int i_b = mesh->bottom_of(i);
 
-        A_m(i, i) = aP[i];
+        matrix->setNum(i, i, aP[i]);
 
         if(!mesh->is_at_left_boundary(i))
         {
-            A_m(i, i_l) = -aL[i];
+            matrix->setNum(i, i_l, -aL[i]);
         }
         if(!mesh->is_at_right_boundary(i))
         {
-            A_m(i, i_r) = -aR[i];
+            matrix->setNum(i, i_r, -aR[i]);
         }
         if(!mesh->is_at_bottom_boundary(i))
         {
-            A_m(i, i_b) = -aB[i];
+            matrix->setNum(i, i_b, -aB[i]);
         }
         if(!mesh->is_at_top_boundary(i))
         {
-            A_m(i, i_t) = -aT[i];
+            matrix->setNum(i, i_t, -aT[i]);
         }
     }
-
-    b_m = Su;
-
-    cout << "A_m: " << endl << A_m << endl;
-    cout << endl;
-
-    cout << "b_m: " << endl << b_m << endl;
-    cout << endl;
 }
 
-MatrixCoeff& MatrixCoeff::addConvectionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source)
+MatrixCoeff& MatrixCoeff::addConvectionTerm()
 {
-    double T_l = boundary.T_left;
-    double T_r = boundary.T_right;
-    double T_b = boundary.T_bottom;
-    double T_t = boundary.T_top;
+    double T_l = boundary->T_left;
+    double T_r = boundary->T_right;
+    double T_b = boundary->T_bottom;
+    double T_t = boundary->T_top;
 
-    double q_w = boundary.q_w;
+    double q_w = boundary->q_w;
 
     double Ax = mesh->get_Ax();
     double Ay = mesh->get_Ay();
@@ -58,8 +71,6 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm(const Mesh* mesh, const Boundary& bo
     const VectorXd& F_r = mesh->get_F_r();
     const VectorXd& F_b = mesh->get_F_b();
     const VectorXd& F_t = mesh->get_F_t();
-
-    int N = mesh->get_N();
 
     aL += F_l.cwiseMax(VectorXd::Zero(N));
     aR += (-F_r).cwiseMax(VectorXd::Zero(N));
@@ -99,13 +110,13 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm(const Mesh* mesh, const Boundary& bo
     return *this;
 }
 
-MatrixCoeff& MatrixCoeff::addDiffusionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source)
+MatrixCoeff& MatrixCoeff::addDiffusionTerm()
 {
-    double T_l = boundary.T_left;
-    double T_r = boundary.T_right;
-    double T_b = boundary.T_bottom;
-    double T_t = boundary.T_top;
-    double q_w = boundary.q_w;
+    double T_l = boundary->T_left;
+    double T_r = boundary->T_right;
+    double T_b = boundary->T_bottom;
+    double T_t = boundary->T_top;
+    double q_w = boundary->q_w;
 
     double Ax = mesh->get_Ax();
     double Ay = mesh->get_Ay();
@@ -115,8 +126,6 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm(const Mesh* mesh, const Boundary& bou
     const VectorXd& DA_R = mesh->get_DA_R();
     const VectorXd& DA_B = mesh->get_DA_B();
     const VectorXd& DA_T = mesh->get_DA_T();
-
-    int N = mesh->get_N();
 
     aL += DA_L;
     aR += DA_R;
@@ -157,9 +166,9 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm(const Mesh* mesh, const Boundary& bou
     return *this;
 }
 
-MatrixCoeff& MatrixCoeff::addSourceTerm(const Mesh* mesh, const Boundary& boundary, const Source& source)
+MatrixCoeff& MatrixCoeff::addSourceTerm()
 {
-    double S_bar = source.S_bar;
+    double S_bar = source->S_bar;
 
     const VectorXd& V = mesh->get_V();
 
@@ -168,4 +177,44 @@ MatrixCoeff& MatrixCoeff::addSourceTerm(const Mesh* mesh, const Boundary& bounda
     Su += S_bar * V;
 
     return *this;
+}
+
+void MatrixCoeff::DebugSolve()
+{
+    initDenseMatrix();
+
+    MatrixXd& A_m = dense_matrix_wrapper.getMatrix();
+
+    // 求解矩阵
+    x = A_m.fullPivLu().solve(b_m);
+
+    // 输出结果
+    cout << "A_m: " << endl << A_m << endl;
+    cout << endl;
+
+    cout << "b_m: " << endl << b_m << endl;
+    cout << endl;
+
+    cout << "Solution: " << endl << x << endl;
+}
+
+void MatrixCoeff::Solve()
+{
+    initSparseMatrix();
+
+    SparseMatrix<double>& A_m = sparse_matrix_wrapper.getMatrix();
+
+    // ref. http://eigen.tuxfamily.org/dox/classEigen_1_1BiCGSTAB.html
+    // ref. http://eigen.tuxfamily.org/dox/group__TopicSparseSystems.html#TutorialSparseSolverConcept
+    // ref. http://eigen.tuxfamily.org/dox/group__MatrixfreeSolverExample.html
+
+    // BiCGSTAB<SparseMatrix<double>, Eigen::IdentityPreconditioner> solver;
+    BiCGSTAB<SparseMatrix<double>, Eigen::IncompleteLUT<double>> solver;
+    solver.compute(A_m);
+    x = solver.solve(b_m);
+
+    std::cout << "#iterations:     " << solver.iterations() << std::endl;
+    std::cout << "estimated error: " << solver.error()      << std::endl;
+
+    std::cout << "x: " << std::endl << x << std::endl;
 }

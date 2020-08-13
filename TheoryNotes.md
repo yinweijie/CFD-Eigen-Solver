@@ -614,6 +614,10 @@ $$
 a_{P}=a_{L}+a_{R}+\left(F_{r}-F_{l}\right)-S_{p}
 $$
 
+系数矩阵形式如下：
+
+![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200813155844.png)
+
 - 编程实现
 
 从上面表格中可以总结这样一个规律：
@@ -632,8 +636,6 @@ $$
 
 在`MatrixCoeff`类中，封装了三个成员函数`addConvectionTerm`、`addDiffusionTerm`和`addSourceTerm`将方程的对流、扩散和源项分别处理，这样可以只引入需要考虑的项。
 
-
-
 - 算例
 
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200811154409.png)
@@ -641,3 +643,89 @@ $$
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200811154435.png)
 
 **注意**，我的程序中，y坐标是向上的，因此Top和Bottom与这里的正好相反，因此`Inputs`中`top`为150℃，`bottom`为250℃。
+
+## 类封装
+
+至此，二维稳态对流扩散代码基本实现，最后一步是完善矩阵迭代求解器。之前一直是使用稠密矩阵`MatrixXd`来存储，并且使用矩阵直接求解法求解矩阵，效率不高，内存消耗也比较大。
+
+- 迭代求解简单案例
+
+`Eigen`库中自带有系数矩阵类`SparseMatrix<T>`，以及迭代求解器，例如`BiCGSTAB`，因此可以用稀疏矩阵去保存系数，并采用迭代求解器求解，下面给出一个简单的`Eigen`库迭代求解稀疏矩阵的例子：
+
+```cpp
+#include <Eigen/Sparse>
+#include <Eigen/IterativeLinearSolvers>
+#include <vector>
+#include <iostream>
+
+using Eigen::SparseMatrix;
+using Eigen::VectorXd;
+using Eigen::VectorXi;
+using Eigen::BiCGSTAB;
+
+int main(int argc, char** argv)
+{
+
+    int n = 5;
+    VectorXd x(n), b(n);
+    SparseMatrix<double> A(n,n); // default is column major
+
+    /******* fill A and b ******/ 
+    /*
+    A matrix:
+    [ 30.5  -9.5   0.    0.    0. ]
+    [-10.5  20.   -9.5   0.    0. ]
+    [  0.  -10.5  20.   -9.5   0. ]
+    [  0.    0.  -10.5  20.   -9.5]
+    [  0.    0.    0.  -10.5  29.5]
+
+    B vector
+    [2200.  100.  100.  100. 3900.]
+    */
+    A.reserve(VectorXi::Constant(n, 3));
+
+    for(int i = 0; i < 5; i++)
+    {
+        if(i == 0)
+        {
+            A.insert(i, i) = 30.5;
+            A.insert(i, i+1) = -9.5;
+            b[i] = 2200;
+        }
+        else if(i == 4)
+        {
+            A.insert(i, i-1) = -10.5;
+            A.insert(i, i) = 29.5;
+            b[i] = 3900;
+        }
+        else
+        {
+            A.insert(i, i-1) = -10.5;                    // alternative: mat.coeffRef(i,j) += v_ij;
+            A.insert(i, i) = 20;
+            A.insert(i, i+1) = -9.5;
+            b[i] = 100;
+        }
+    }
+
+    A.makeCompressed();                        // optional
+
+    /* ^^^^ fill A and b ^^^^ */ 
+
+    BiCGSTAB<SparseMatrix<double>, Eigen::IdentityPreconditioner> solver;
+    solver.compute(A);
+    x = solver.solve(b);
+
+    std::cout << "#iterations:     " << solver.iterations() << std::endl;
+    std::cout << "estimated error: " << solver.error()      << std::endl;
+
+    std::cout << "x: " << std::endl << x << std::endl;
+
+    return 0;
+}
+```
+
+- CFD求解器中实现迭代求解
+
+为了方便Debug操作，依旧保留之前的稠密矩阵类的求解过程，重新定义一个新的稀疏矩阵求解过程，而这两个过程在初始化矩阵的的步骤有大量相同操作，为了将这部分代码抽象出来，定义了一个抽象接口类`MatrixInterface`，定义在`MatrixInterface.h`中，以及两个封装类`DenseMatrixWrapper`和`SparseMatrixWrapper`定义在`MatrixWrapper.h`中，这两个封装类会implement这个接口，用于实现往矩阵中插入数字的过程。
+
+初始化矩阵在函数`initDenseMatrix`、`initSparseMatrix`以及`init`中，求解矩阵在函数`DebugSolve`和`Solve`函数中。

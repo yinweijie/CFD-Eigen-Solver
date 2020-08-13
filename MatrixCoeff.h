@@ -2,26 +2,43 @@
 #define __MATRIX_COEFF__
 
 #include <iostream>
+#include <Eigen/Sparse>
+#include <Eigen/IterativeLinearSolvers>
 #include "Inputs.h"
 #include "Mesh.h"
+#include "MatrixWrapper.h"
 
+using Eigen::SparseMatrix;
+using Eigen::BiCGSTAB;
 using namespace std;
 
 // N: 网格数
 class MatrixCoeff
 {
 private:
+    const Mesh* mesh;
+    const Boundary* boundary;
+    const Source* source;
+    // 网格数量
+    int N;
+
     VectorXd aL, aR, aB, aT, aP, Sp, Su;
 
-    MatrixXd A_m;
     VectorXd b_m;
     VectorXd x;
 
-public:
-    MatrixCoeff(const Mesh* mesh, const Boundary& boundary, const Source& source)
-    {
-        int N = mesh->get_N();
+    /**
+     * MatrixXd和SparseMatrix的封装类，封装后的Wrapper类共同继承接口MatrixInterface，
+     * 并实现接口函数MatrixInterface::setNum，这个函数用来往矩阵中插入元素
+     */
+    DenseMatrixWrapper dense_matrix_wrapper;
+    SparseMatrixWrapper sparse_matrix_wrapper;
 
+public:
+    MatrixCoeff(const Mesh* mesh, const Boundary* boundary, const Source* source) 
+        : mesh(mesh), boundary(boundary), source(source), N(mesh->get_N()),
+          dense_matrix_wrapper(N, N), sparse_matrix_wrapper(N, N)
+    {
         aL = VectorXd::Zero(N);
         aR = VectorXd::Zero(N);
         aB = VectorXd::Zero(N);
@@ -31,21 +48,30 @@ public:
         Sp = VectorXd::Zero(N);
         Su = VectorXd::Zero(N);
 
-        A_m = MatrixXd::Zero(N, N);
         b_m = VectorXd::Zero(N);
         x = VectorXd::Zero(N);
     }
 
-    MatrixXd& get_A_m() { return A_m; }
     VectorXd& get_b_m() { return b_m; }
     VectorXd& get_x() { return x; }
 
-    MatrixCoeff& addConvectionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
-    MatrixCoeff& addDiffusionTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
-    MatrixCoeff& addSourceTerm(const Mesh* mesh, const Boundary& boundary, const Source& source);
-    
-    // Matrix系数初始化
-    void initMatrix(const Mesh* mesh, const Boundary& boundary, const Source& source);
+    // MatrixXd系数初始化
+    void initDenseMatrix();
+
+    // SparseMatrix系数初始化
+    void initSparseMatrix();
+
+    void init(MatrixInterface* matrix);
+
+    MatrixCoeff& addConvectionTerm();
+    MatrixCoeff& addDiffusionTerm();
+    MatrixCoeff& addSourceTerm();
+
+    // 系数矩阵存在非稀疏矩阵MatrixXd中，方便打印输出
+    void DebugSolve();
+
+    // 系数矩阵存在稀疏矩阵SparseMatrix中，用于迭代求解
+    void Solve();
 };
 
 #endif
