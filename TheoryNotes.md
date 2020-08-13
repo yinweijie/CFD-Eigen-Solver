@@ -547,6 +547,15 @@ $$
 
 ## 二维扩散
 
+- 方程离散
+
+$$
+0=\nabla \cdot(k \nabla T)+S \\
+0=\frac{\partial}{\partial x}\left(k \frac{\partial T}{\partial x}\right)+\frac{\partial}{\partial y}\left(k \frac{\partial T}{\partial y}\right)+S \\
+0=\int_{V}\left[\frac{\partial}{\partial x}\left(k \frac{\partial T}{\partial x}\right)+\frac{\partial}{\partial y}\left(k \frac{\partial T}{\partial y}\right)\right] \mathrm{d} V+\bar{S} V\\
+0=\left(k A \frac{\partial T}{\partial x}\right)_{r}-\left(k A \frac{\partial T}{\partial x}\right)_{l}+\left(k A \frac{\partial T}{\partial y}\right)_{t}-\left(k A \frac{\partial T}{\partial y}\right)_{b}+\bar{S} V
+$$
+
 - 系数总结
 
 二维扩散，两种边界条件的系数如下：
