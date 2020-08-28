@@ -842,8 +842,8 @@ $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e u_e, 0\right) A_x+\frac{\mu_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e\\
 a_{W} &=\max \left(\rho_w u_w, 0\right) A_x+\frac{\mu_{w}}{\Delta x} A_x = \max(F_w, 0) + DA_w\\
-a_{N} &=\max \left(-\rho_n u_n, 0\right) A_y+\frac{\mu_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
-a_{S} &=\max \left(\rho_s u_s, 0\right)A_y+\frac{\mu_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
+a_{N} &=\max \left(-\rho_n v_n, 0\right) A_y+\frac{\mu_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
+a_{S} &=\max \left(\rho_s v_s, 0\right)A_y+\frac{\mu_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
 a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{u} &=\frac{1}{2}\left(p_{W}-p_{E}\right) A_x \\
 \end{aligned}
@@ -859,8 +859,8 @@ $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e u_e, 0\right) A_x+\frac{\mu_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e\\
 a_{W} &=\max \left(\rho_w u_w, 0\right) A_x+\frac{\mu_{w}}{\Delta x} A_x = \max(F_w, 0) + DA_w\\
-a_{N} &=\max \left(-\rho_n u_n, 0\right) A_y+\frac{\mu_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
-a_{S} &=\max \left(\rho_s u_s, 0\right)A_y+\frac{\mu_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
+a_{N} &=\max \left(-\rho_n v_n, 0\right) A_y+\frac{\mu_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
+a_{S} &=\max \left(\rho_s v_s, 0\right)A_y+\frac{\mu_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
 a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{v} &=\frac{1}{2}\left(p_{S}-p_{N}\right) A_y
 \end{aligned}
@@ -876,8 +876,8 @@ $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e c_p u_e, 0\right) A_x+\frac{k_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e \\
 a_{W} &=\max \left(\rho_w c_p u_w, 0\right) A_x+\frac{k_{w}}{\Delta x} A_x = \max(F_w, 0) + DA_w \\
-a_{N} &=\max \left(-\rho_n c_p u_n, 0\right) A_y+\frac{k_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
-a_{S} &=\max \left(\rho_s c_p u_s, 0\right)A_y+\frac{k_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
+a_{N} &=\max \left(-\rho_n c_p v_n, 0\right) A_y+\frac{k_{n}}{\Delta y} A_y = \max(-F_n, 0) + DA_n \\
+a_{S} &=\max \left(\rho_s c_p v_s, 0\right)A_y+\frac{k_{s}}{\Delta y} A_y = \max(F_s, 0) + DA_s\\
 a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{T} &= \bar{S}V
 \end{aligned}

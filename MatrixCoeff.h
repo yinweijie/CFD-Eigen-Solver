@@ -1,5 +1,5 @@
-#ifndef __MATRIX_COEFF__
-#define __MATRIX_COEFF__
+#ifndef __MATRIX_COEFF_H__
+#define __MATRIX_COEFF_H__
 
 #include <iostream>
 #include <Eigen/Sparse>
@@ -7,6 +7,8 @@
 #include "Inputs.h"
 #include "Mesh.h"
 #include "MatrixWrapper.h"
+#include "Field.h"
+#include "TransportEqn.h"
 
 using Eigen::SparseMatrix;
 using Eigen::BiCGSTAB;
@@ -34,10 +36,13 @@ private:
     DenseMatrixWrapper dense_matrix_wrapper;
     SparseMatrixWrapper sparse_matrix_wrapper;
 
+    Field* field;
+
+    TransportEqn* eqn;
 public:
-    MatrixCoeff(const Mesh* mesh, const Boundary* boundary, const Source* source) 
+    MatrixCoeff(const Mesh* mesh, const Boundary* boundary, const Source* source, Field* field, TransportEqn* eqn) 
         : mesh(mesh), boundary(boundary), source(source), N(mesh->get_N()),
-          dense_matrix_wrapper(N, N), sparse_matrix_wrapper(N, N)
+          dense_matrix_wrapper(N, N), sparse_matrix_wrapper(N, N), field(field), eqn(eqn)
     {
         aL = VectorXd::Zero(N);
         aR = VectorXd::Zero(N);

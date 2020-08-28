@@ -2,11 +2,6 @@
 
 void Mesh::initMesh(const Inputs* inputs)
 {
-    double k = inputs->physcial_properties.k;
-    double rho = inputs->physcial_properties.rho;
-    double cp = inputs->physcial_properties.cp;
-    double U = inputs->boundary.U;
-
     // x方向网格长度
     double dx = inputs->geometry.XLen / Nx;
     double dy = inputs->geometry.YLen / Ny;
@@ -78,22 +73,6 @@ void Mesh::initMesh(const Inputs* inputs)
         if(!flag_d_PR[i]) (d_PR[i] = xCentroid[i_r] - xCentroid[i], flag_d_PR[i]);
         if(!flag_d_PT[i]) (d_PT[i] = yCentroid[i_t] - yCentroid[i], flag_d_PT[i]);
         if(!flag_d_BP[i]) (d_BP[i] = yCentroid[i] - yCentroid[i_b], flag_d_BP[i]);
-
-        DA_L[i] = k * Ax / d_LP[i];
-        DA_R[i] = k * Ax / d_PR[i];
-        DA_T[i] = k * Ay / d_PT[i];
-        DA_B[i] = k * Ay / d_BP[i];
-
-        // 这里速度是均匀的
-        U_l.setConstant(U);
-        U_r.setConstant(U);
-        U_b.setConstant(U);
-        U_t.setConstant(U);
-
-        F_l = rho * cp * U_l * Ax;
-        F_r = rho * cp * U_r * Ax;
-        F_b = rho * cp * U_b * Ay;
-        F_t = rho * cp * U_t * Ay;
 
         // 网格体积 = faceArea * dx
         int ix = i % Nx;

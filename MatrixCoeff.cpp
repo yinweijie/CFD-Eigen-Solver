@@ -67,10 +67,10 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm()
     double Ay = mesh->get_Ay();
     double Az = mesh->get_Az();
 
-    const VectorXd& F_l = mesh->get_F_l();
-    const VectorXd& F_r = mesh->get_F_r();
-    const VectorXd& F_b = mesh->get_F_b();
-    const VectorXd& F_t = mesh->get_F_t();
+    const VectorXd& F_l = eqn->get_F_l();
+    const VectorXd& F_r = eqn->get_F_r();
+    const VectorXd& F_b = eqn->get_F_b();
+    const VectorXd& F_t = eqn->get_F_t();
 
     aL += F_l.cwiseMax(VectorXd::Zero(N));
     aR += (-F_r).cwiseMax(VectorXd::Zero(N));
@@ -122,10 +122,10 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm()
     double Ay = mesh->get_Ay();
     double Az = mesh->get_Az();
 
-    const VectorXd& DA_L = mesh->get_DA_L();
-    const VectorXd& DA_R = mesh->get_DA_R();
-    const VectorXd& DA_B = mesh->get_DA_B();
-    const VectorXd& DA_T = mesh->get_DA_T();
+    const VectorXd& DA_L = eqn->get_DA_L();
+    const VectorXd& DA_R = eqn->get_DA_R();
+    const VectorXd& DA_B = eqn->get_DA_B();
+    const VectorXd& DA_T = eqn->get_DA_T();
 
     aL += DA_L;
     aR += DA_R;
@@ -168,13 +168,7 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm()
 
 MatrixCoeff& MatrixCoeff::addSourceTerm()
 {
-    double S_bar = source->S_bar;
-
-    const VectorXd& V = mesh->get_V();
-
-    int N = mesh->get_N();
-
-    Su += S_bar * V;
+    Su += eqn->get_S();
 
     return *this;
 }

@@ -1,5 +1,5 @@
-#ifndef __MATRIX_WRAPPER__
-#define __MATRIX_WRAPPER__
+#ifndef __MATRIX_WRAPPER_H__
+#define __MATRIX_WRAPPER_H__
 
 #include <iostream>
 #include <Eigen/Sparse>

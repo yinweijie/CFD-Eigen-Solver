@@ -1,5 +1,5 @@
-#ifndef __MATRIX_INTERFACE__
-#define __MATRIX_INTERFACE__
+#ifndef __MATRIX_INTERFACE_H__
+#define __MATRIX_INTERFACE_H__
 
 class MatrixInterface
 {

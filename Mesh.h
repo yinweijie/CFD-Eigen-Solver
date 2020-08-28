@@ -20,12 +20,12 @@ private:
     VectorXd d_LP, d_PR, d_BP, d_PT;
     // 标记是否已被赋值，0未赋值，1已赋值
     VectorXi flag_d_LP, flag_d_PR, flag_d_BP, flag_d_PT;
-    // k*A/d
-    VectorXd DA_L, DA_R, DA_B, DA_T;
-    // F = rho * cp * U * A
-    VectorXd F_l, F_r, F_b, F_t;
-    // 网格左/右/下/上面速度
-    VectorXd U_l, U_r, U_b, U_t;
+    // // k*A/d
+    // VectorXd DA_L, DA_R, DA_B, DA_T;
+    // // F = rho * cp * U * A
+    // VectorXd F_l, F_r, F_b, F_t;
+    // // 网格左/右/下/上面速度
+    // VectorXd U_l, U_r, U_b, U_t;
     // 网格体积
     VectorXd V;
     // 网格数量
@@ -56,37 +56,17 @@ public:
         flag_d_BP = VectorXi::Zero(N);
         flag_d_PT = VectorXi::Zero(N);
 
-        DA_L = VectorXd(N);
-        DA_R = VectorXd(N);
-        DA_B = VectorXd(N);
-        DA_T = VectorXd(N);
-
-        F_l = VectorXd(N);
-        F_r = VectorXd(N);
-        F_b = VectorXd(N);
-        F_t = VectorXd(N);
-
-        U_l = VectorXd(N);
-        U_r = VectorXd(N);
-        U_b = VectorXd(N);
-        U_t = VectorXd(N);
-
         V = VectorXd(N);
 
         initMesh(inputs);
     }
 
-    const VectorXd& get_DA_L() const { return DA_L; }
-    const VectorXd& get_DA_R() const { return DA_R; }
-    const VectorXd& get_DA_B() const { return DA_B; }
-    const VectorXd& get_DA_T() const { return DA_T; }
-
-    const VectorXd& get_F_l() const { return F_l; }
-    const VectorXd& get_F_r() const { return F_r; }
-    const VectorXd& get_F_b() const { return F_b; }
-    const VectorXd& get_F_t() const { return F_t; }
-
     const VectorXd& get_V() const { return V; }
+
+    const VectorXd& get_d_LP() const { return d_LP; }
+    const VectorXd& get_d_PR() const { return d_PR; }
+    const VectorXd& get_d_BP() const { return d_BP; }
+    const VectorXd& get_d_PT() const { return d_PT; }
 
     int get_N() const { return N; }
 
