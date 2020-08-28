@@ -10,10 +10,10 @@ void TransportEqn::init_DA()
     double Ax = mesh->get_Ax();
     double Ay = mesh->get_Ay();
 
-    DA_L = gamma() * Ax * d_LP.cwiseInverse();
-    DA_R = gamma() * Ax * d_PR.cwiseInverse();
-    DA_T = gamma() * Ay * d_PT.cwiseInverse();
-    DA_B = gamma() * Ay * d_BP.cwiseInverse();
+    DA_w = gamma() * Ax * d_LP.cwiseInverse();
+    DA_e = gamma() * Ax * d_PR.cwiseInverse();
+    DA_n = gamma() * Ay * d_PT.cwiseInverse();
+    DA_s = gamma() * Ay * d_BP.cwiseInverse();
 }
 
 void TransportEqn::init_F()
@@ -26,8 +26,8 @@ void TransportEqn::init_F()
     const VectorXd& v_n = field->v_n;
     const VectorXd& v_s = field->v_s;
 
-    F_l = density() * u_w * Ax;
-    F_r = density() * u_e * Ax;
-    F_b = density() * v_s * Ay;
-    F_t = density() * v_n * Ay;
+    F_w = density() * u_w * Ax;
+    F_e = density() * u_e * Ax;
+    F_s = density() * v_s * Ay;
+    F_n = density() * v_n * Ay;
 }

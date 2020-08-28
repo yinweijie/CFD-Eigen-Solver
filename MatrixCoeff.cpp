@@ -33,23 +33,23 @@ void MatrixCoeff::init(MatrixInterface* matrix)
         int i_t = mesh->top_of(i);
         int i_b = mesh->bottom_of(i);
 
-        matrix->setNum(i, i, aP[i]);
+        matrix->setNum(i, i, aO[i]);
 
         if(!mesh->is_at_left_boundary(i))
         {
-            matrix->setNum(i, i_l, -aL[i]);
+            matrix->setNum(i, i_l, -aW[i]);
         }
         if(!mesh->is_at_right_boundary(i))
         {
-            matrix->setNum(i, i_r, -aR[i]);
+            matrix->setNum(i, i_r, -aE[i]);
         }
         if(!mesh->is_at_bottom_boundary(i))
         {
-            matrix->setNum(i, i_b, -aB[i]);
+            matrix->setNum(i, i_b, -aS[i]);
         }
         if(!mesh->is_at_top_boundary(i))
         {
-            matrix->setNum(i, i_t, -aT[i]);
+            matrix->setNum(i, i_t, -aN[i]);
         }
     }
 }
@@ -67,45 +67,45 @@ MatrixCoeff& MatrixCoeff::addConvectionTerm()
     double Ay = mesh->get_Ay();
     double Az = mesh->get_Az();
 
-    const VectorXd& F_l = eqn->get_F_l();
-    const VectorXd& F_r = eqn->get_F_r();
-    const VectorXd& F_b = eqn->get_F_b();
-    const VectorXd& F_t = eqn->get_F_t();
+    const VectorXd& F_w = eqn->get_F_w();
+    const VectorXd& F_e = eqn->get_F_e();
+    const VectorXd& F_s = eqn->get_F_s();
+    const VectorXd& F_n = eqn->get_F_n();
 
-    aL += F_l.cwiseMax(VectorXd::Zero(N));
-    aR += (-F_r).cwiseMax(VectorXd::Zero(N));
-    aB += F_b.cwiseMax(VectorXd::Zero(N));
-    aT += (-F_t).cwiseMax(VectorXd::Zero(N));
+    aW += F_w.cwiseMax(VectorXd::Zero(N));
+    aE += (-F_e).cwiseMax(VectorXd::Zero(N));
+    aS += F_s.cwiseMax(VectorXd::Zero(N));
+    aN += (-F_n).cwiseMax(VectorXd::Zero(N));
 
     for(int i = 0; i < N; i++)
     {
         if(mesh->is_at_left_boundary(i))
         {
-            aL[i] = 0; // 左边界
-            Sp[i] += -(max(F_l[i], 0.0));
-            Su[i] += T_l * max(F_l[i], 0.0);
+            aW[i] = 0; // 左边界
+            SO[i] += -(max(F_w[i], 0.0));
+            Su[i] += T_l * max(F_e[i], 0.0);
         }
         if(mesh->is_at_right_boundary(i))
         {
-            aR[i] = 0; // 右边界
-            Sp[i] += -(max(-F_r[i], 0.0));
-            Su[i] += T_r * max(-F_r[i], 0.0);
+            aE[i] = 0; // 右边界
+            SO[i] += -(max(-F_e[i], 0.0));
+            Su[i] += T_r * max(-F_e[i], 0.0);
         }
         if(mesh->is_at_bottom_boundary(i))
         {
-            aB[i] = 0; // 下边界
-            Sp[i] += -(max(F_b[i], 0.0));
-            Su[i] += T_b * max(F_b[i], 0.0);
+            aS[i] = 0; // 下边界
+            SO[i] += -(max(F_s[i], 0.0));
+            Su[i] += T_b * max(F_s[i], 0.0);
         }
         if(mesh->is_at_top_boundary(i))
         {
-            aT[i] = 0; // 上边界
-            Sp[i] += -(max(-F_t[i], 0.0));
-            Su[i] += T_t * max(-F_t[i], 0.0);
+            aN[i] = 0; // 上边界
+            SO[i] += -(max(-F_n[i], 0.0));
+            Su[i] += T_t * max(-F_n[i], 0.0);
         }
     }
 
-    aP += aL + aR + aB + aT - Sp + (F_r - F_l + F_t - F_b);
+    aO += aW + aE + aS + aN - SO + (F_e - F_w + F_n - F_s);
 
     return *this;
 }
@@ -122,46 +122,46 @@ MatrixCoeff& MatrixCoeff::addDiffusionTerm()
     double Ay = mesh->get_Ay();
     double Az = mesh->get_Az();
 
-    const VectorXd& DA_L = eqn->get_DA_L();
-    const VectorXd& DA_R = eqn->get_DA_R();
-    const VectorXd& DA_B = eqn->get_DA_B();
-    const VectorXd& DA_T = eqn->get_DA_T();
+    const VectorXd& DA_w = eqn->get_DA_w();
+    const VectorXd& DA_e = eqn->get_DA_e();
+    const VectorXd& DA_s = eqn->get_DA_s();
+    const VectorXd& DA_n = eqn->get_DA_n();
 
-    aL += DA_L;
-    aR += DA_R;
-    aB += DA_B;
-    aT += DA_T;
+    aW += DA_w;
+    aE += DA_e;
+    aS += DA_s;
+    aN += DA_n;
 
     for(int i = 0; i < N; i++)
     {
         if(mesh->is_at_left_boundary(i))
         {
-            aL[i] = 0; // 左边界
-            Sp[i] += -2*DA_L[i];
-            Su[i] += T_l * 2*DA_L[i];
+            aW[i] = 0; // 左边界
+            SO[i] += -2*DA_w[i];
+            Su[i] += T_l * 2*DA_w[i];
             // Su[i] += -q_w*Ax; // 左边界使用黎曼边界条件
         }
         if(mesh->is_at_right_boundary(i))
         {
-            aR[i] = 0; // 右边界
-            Sp[i] += -2*DA_R[i];
-            Su[i] += T_r * 2*DA_R[i];
+            aE[i] = 0; // 右边界
+            SO[i] += -2*DA_e[i];
+            Su[i] += T_r * 2*DA_e[i];
         }
         if(mesh->is_at_bottom_boundary(i))
         {
-            aB[i] = 0; // 下边界
-            Sp[i] += -2*DA_B[i];
-            Su[i] += T_b * 2*DA_B[i];
+            aS[i] = 0; // 下边界
+            SO[i] += -2*DA_s[i];
+            Su[i] += T_b * 2*DA_s[i];
         }
         if(mesh->is_at_top_boundary(i))
         {
-            aT[i] = 0; // 上边界
-            Sp[i] += -2*DA_T[i];
-            Su[i] += T_t * 2*DA_T[i];
+            aN[i] = 0; // 上边界
+            SO[i] += -2*DA_n[i];
+            Su[i] += T_t * 2*DA_n[i];
         }
     }
 
-    aP += aL + aR + aB + aT - Sp;
+    aO += aW + aE + aS + aN - SO;
 
     return *this;
 }

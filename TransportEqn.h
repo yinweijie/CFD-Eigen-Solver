@@ -17,11 +17,11 @@ protected:
 
     // Energy Eqn: DA = k * A / d
     // Momentum Eqn: DA = mu * A / d
-    VectorXd DA_L, DA_R, DA_B, DA_T;
+    VectorXd DA_w, DA_e, DA_s, DA_n;
 
     // Energy Eqn: F = rho * cp * U * A
     // Momentum Eqn: F = rho * U * A
-    VectorXd F_l, F_r, F_b, F_t;
+    VectorXd F_w, F_e, F_s, F_n;
 
     // Energy Eqn: S = S_bar * V
     // X Momentum Eqn: S = dp / dx
@@ -36,30 +36,30 @@ protected:
 public:
     TransportEqn(Mesh* mesh, Field* field, Inputs* inputs) : mesh(mesh), N(mesh->get_N()), field(field), inputs(inputs)
     {
-        DA_L = VectorXd(N);
-        DA_R = VectorXd(N);
-        DA_B = VectorXd(N);
-        DA_T = VectorXd(N);
+        DA_w = VectorXd(N);
+        DA_e = VectorXd(N);
+        DA_s = VectorXd(N);
+        DA_n = VectorXd(N);
 
-        F_l = VectorXd(N);
-        F_r = VectorXd(N);
-        F_b = VectorXd(N);
-        F_t = VectorXd(N);
+        F_w = VectorXd(N);
+        F_e = VectorXd(N);
+        F_s = VectorXd(N);
+        F_n = VectorXd(N);
 
         S = VectorXd(N);
 
         rho = inputs->physcial_properties.rho;
     }
 
-    const VectorXd& get_DA_L() const { return DA_L; }
-    const VectorXd& get_DA_R() const { return DA_R; }
-    const VectorXd& get_DA_B() const { return DA_B; }
-    const VectorXd& get_DA_T() const { return DA_T; }
+    const VectorXd& get_DA_w() const { return DA_w; }
+    const VectorXd& get_DA_e() const { return DA_e; }
+    const VectorXd& get_DA_s() const { return DA_s; }
+    const VectorXd& get_DA_n() const { return DA_n; }
 
-    const VectorXd& get_F_l() const { return F_l; }
-    const VectorXd& get_F_r() const { return F_r; }
-    const VectorXd& get_F_b() const { return F_b; }
-    const VectorXd& get_F_t() const { return F_t; }
+    const VectorXd& get_F_w() const { return F_w; }
+    const VectorXd& get_F_e() const { return F_e; }
+    const VectorXd& get_F_s() const { return F_s; }
+    const VectorXd& get_F_n() const { return F_n; }
 
     const VectorXd& get_S() const { return S; }
 

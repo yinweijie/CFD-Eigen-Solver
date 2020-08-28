@@ -24,7 +24,7 @@ private:
     // 网格数量
     int N;
 
-    VectorXd aL, aR, aB, aT, aP, Sp, Su;
+    VectorXd aW, aE, aS, aN, aO, SO, Su;
 
     VectorXd b_m;
     VectorXd x;
@@ -44,13 +44,13 @@ public:
         : mesh(mesh), boundary(boundary), source(source), N(mesh->get_N()),
           dense_matrix_wrapper(N, N), sparse_matrix_wrapper(N, N), field(field), eqn(eqn)
     {
-        aL = VectorXd::Zero(N);
-        aR = VectorXd::Zero(N);
-        aB = VectorXd::Zero(N);
-        aT = VectorXd::Zero(N);
-        aP = VectorXd::Zero(N);
+        aW = VectorXd::Zero(N);
+        aE = VectorXd::Zero(N);
+        aS = VectorXd::Zero(N);
+        aN = VectorXd::Zero(N);
+        aO = VectorXd::Zero(N);
 
-        Sp = VectorXd::Zero(N);
+        SO = VectorXd::Zero(N);
         Su = VectorXd::Zero(N);
 
         b_m = VectorXd::Zero(N);

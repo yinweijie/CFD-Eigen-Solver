@@ -35,9 +35,6 @@ void Inputs::initInputs()
     // 左边界热流密度 (W/m^2)
     boundary.q_w = 100;
 
-    // 流体速度
-    boundary.U = 0.0;
-    
     // Heat source per unit volume (W/m3)
     source.S_bar = 1000;
 }

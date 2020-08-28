@@ -33,8 +33,8 @@ int main()
                    .addSourceTerm();
 
     // 求解矩阵
-    // matrix_coeff->DebugSolve();
-    matrix_coeff->Solve();
+    matrix_coeff->DebugSolve();
+    // matrix_coeff->Solve();
 
     delete matrix_coeff;
     delete eqn;

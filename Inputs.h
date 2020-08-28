@@ -33,8 +33,6 @@ struct Boundary
     double T_top;
     // 左边界热流密度 (W/m^2)
     double q_w;
-    // 流体速度
-    double U;
 };
 
 struct Source
