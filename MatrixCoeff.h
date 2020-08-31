@@ -7,20 +7,16 @@
 #include "Inputs.h"
 #include "Mesh.h"
 #include "MatrixWrapper.h"
-#include "Field.h"
-#include "TransportEqn.h"
 
 using Eigen::SparseMatrix;
 using Eigen::BiCGSTAB;
 using namespace std;
 
-// N: 网格数
+template <typename T>
 class MatrixCoeff
 {
 private:
     const Mesh* mesh;
-    const Boundary* boundary;
-    const Source* source;
     // 网格数量
     int N;
 
@@ -36,13 +32,10 @@ private:
     DenseMatrixWrapper dense_matrix_wrapper;
     SparseMatrixWrapper sparse_matrix_wrapper;
 
-    Field* field;
-
-    TransportEqn* eqn;
+    friend T;
 public:
-    MatrixCoeff(const Mesh* mesh, const Boundary* boundary, const Source* source, Field* field, TransportEqn* eqn) 
-        : mesh(mesh), boundary(boundary), source(source), N(mesh->get_N()),
-          dense_matrix_wrapper(N, N), sparse_matrix_wrapper(N, N), field(field), eqn(eqn)
+    MatrixCoeff(const Mesh* mesh) 
+        : mesh(mesh), N(mesh->get_N())
     {
         aW = VectorXd::Zero(N);
         aE = VectorXd::Zero(N);
@@ -68,15 +61,112 @@ public:
 
     void init(MatrixInterface* matrix);
 
-    MatrixCoeff& addConvectionTerm();
-    MatrixCoeff& addDiffusionTerm();
-    MatrixCoeff& addSourceTerm();
-
     // 系数矩阵存在非稀疏矩阵MatrixXd中，方便打印输出
-    void DebugSolve();
+    void DebugSolve(VectorXd* field_var);
 
     // 系数矩阵存在稀疏矩阵SparseMatrix中，用于迭代求解
-    void Solve();
+    void Solve(VectorXd* field_var);
 };
+
+template <typename T>
+void MatrixCoeff<T>::initDenseMatrix()
+{
+    dense_matrix_wrapper = DenseMatrixWrapper(N, N);
+
+    init(&dense_matrix_wrapper);
+
+    b_m = Su;
+}
+
+template <typename T>
+void MatrixCoeff<T>::initSparseMatrix()
+{
+    sparse_matrix_wrapper = SparseMatrixWrapper(N, N);
+
+    SparseMatrix<double>& A_m = sparse_matrix_wrapper.getMatrix();
+
+    // 每列预留5个元素的空间，用于插入
+    // ref. http://eigen.tuxfamily.org/dox/group__TutorialSparse.html - Filling a sparse matrix
+    A_m.reserve(VectorXi::Constant(N, 5));
+
+    init(&sparse_matrix_wrapper);
+
+    A_m.makeCompressed(); // optional
+
+    b_m = Su;
+}
+
+template <typename T>
+void MatrixCoeff<T>::init(MatrixInterface* matrix)
+{
+    for(int i = 0; i < N; i++)
+    {
+        int i_l = mesh->left_of(i);
+        int i_r = mesh->right_of(i);
+        int i_t = mesh->top_of(i);
+        int i_b = mesh->bottom_of(i);
+
+        matrix->setNum(i, i, aO[i]);
+
+        if(!mesh->is_at_left_boundary(i))
+        {
+            matrix->setNum(i, i_l, -aW[i]);
+        }
+        if(!mesh->is_at_right_boundary(i))
+        {
+            matrix->setNum(i, i_r, -aE[i]);
+        }
+        if(!mesh->is_at_bottom_boundary(i))
+        {
+            matrix->setNum(i, i_b, -aS[i]);
+        }
+        if(!mesh->is_at_top_boundary(i))
+        {
+            matrix->setNum(i, i_t, -aN[i]);
+        }
+    }
+}
+
+template <typename T>
+void MatrixCoeff<T>::DebugSolve(VectorXd* field_var)
+{
+    initDenseMatrix();
+
+    MatrixXd& A_m = dense_matrix_wrapper.getMatrix();
+
+    // 求解矩阵
+    (*field_var) = A_m.fullPivLu().solve(b_m);
+
+    // 输出结果
+    cout << "A_m: " << endl << A_m << endl;
+    cout << endl;
+
+    cout << "b_m: " << endl << b_m << endl;
+    cout << endl;
+
+    cout << "Solution: " << endl << (*field_var) << endl;
+}
+
+template <typename T>
+void MatrixCoeff<T>::Solve(VectorXd* field_var)
+{
+    initSparseMatrix();
+
+    SparseMatrix<double>& A_m = sparse_matrix_wrapper.getMatrix();
+
+    // ref. http://eigen.tuxfamily.org/dox/classEigen_1_1BiCGSTAB.html
+    // ref. http://eigen.tuxfamily.org/dox/group__TopicSparseSystems.html#TutorialSparseSolverConcept
+    // ref. http://eigen.tuxfamily.org/dox/group__MatrixfreeSolverExample.html
+
+    // BiCGSTAB<SparseMatrix<double>, Eigen::IdentityPreconditioner> solver;
+    BiCGSTAB<SparseMatrix<double>, Eigen::IncompleteLUT<double>> solver;
+    solver.compute(A_m);
+    (*field_var) = solver.solve(b_m);
+
+    std::cout << "#iterations:     " << solver.iterations() << std::endl;
+    std::cout << "estimated error: " << solver.error()      << std::endl;
+
+    std::cout << "Solution: " << std::endl << (*field_var) << std::endl;
+}
 
 #endif

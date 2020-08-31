@@ -13,6 +13,7 @@ class DenseMatrixWrapper : public MatrixInterface
 private:
     MatrixXd m_dense_matrix;
 public:
+    DenseMatrixWrapper() = default;
     DenseMatrixWrapper(int row, int col) : m_dense_matrix(row, col) { }
 
     void setNum(int row, int col, double value)
@@ -24,6 +25,14 @@ public:
     {
         return m_dense_matrix;
     }
+
+    DenseMatrixWrapper& operator=(DenseMatrixWrapper&& rhs)
+    {
+        if(this != &rhs)
+            m_dense_matrix = std::move(rhs.m_dense_matrix);
+
+        return *this;
+    }
 };
 
 class SparseMatrixWrapper : public MatrixInterface
@@ -31,6 +40,7 @@ class SparseMatrixWrapper : public MatrixInterface
 private:
     SparseMatrix<double> m_sparse_matrix;
 public:
+    SparseMatrixWrapper() = default;
     SparseMatrixWrapper(int row, int col) : m_sparse_matrix(row, col) { }
 
     void setNum(int row, int col, double value)
@@ -42,6 +52,14 @@ public:
     SparseMatrix<double>& getMatrix()
     {
         return m_sparse_matrix;
+    }
+
+    SparseMatrixWrapper& operator=(SparseMatrixWrapper&& rhs)
+    {
+        if(this != &rhs)
+            m_sparse_matrix = std::move(rhs.m_sparse_matrix);
+
+        return *this;
     }
 };
 

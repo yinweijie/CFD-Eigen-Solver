@@ -1,10 +1,12 @@
 #include <iostream>
+#include <string>
 #include <Eigen/Dense>
 #include "Inputs.h"
 #include "Mesh.h"
 #include "MatrixCoeff.h"
 #include "Field.h"
 #include "EnergyEqn.h"
+#include "Output.h"
  
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -18,27 +20,34 @@ int main()
     // 创建网格
     Mesh* mesh = new Mesh(inputs);
 
+    // 创建标量场
     Field* field = new Field(mesh->get_N());
 
-    TransportEqn* eqn = new EnergyEqn(mesh, field, inputs);
-    eqn->init();
+    //////////////////////////////// EnergyEqn /////////////////////////////////
+    // 创建能量方程系数矩阵
+    MatrixCoeff<EnergyEqn>* matrix_coeff = new MatrixCoeff<EnergyEqn>(mesh);
 
     // 获取边界条件与源项
     Boundary& boundary = inputs->boundary;
     Source& source = inputs->source;
-    // 将对流项、扩散项、源项，初始化到系数矩阵中
-    MatrixCoeff* matrix_coeff = new MatrixCoeff(mesh, &boundary, &source, field, eqn);
-    (*matrix_coeff).addConvectionTerm()
-                   .addDiffusionTerm()
-                   .addSourceTerm();
+
+    // 创建能量输运方程
+    TransportEqn* eqn = new EnergyEqn(mesh, field, inputs, matrix_coeff, &boundary, &source);
+    eqn->init();
+    (*eqn).addConvectionTerm().addDiffusionTerm().addSourceTerm();
 
     // 求解矩阵
-    matrix_coeff->DebugSolve();
-    // matrix_coeff->Solve();
+    // matrix_coeff->DebugSolve(&(field->T));
+    matrix_coeff->Solve(&(field->T));
 
-    delete matrix_coeff;
-    delete eqn;
-    delete field;
-    delete mesh;
-    delete inputs;
+    // 变量输出
+    Output out(mesh);
+    out.write(field->T, boundary.T_left, boundary.T_right, boundary.T_top, boundary.T_bottom, "Temperature");
+    //////////////////////////////// EnergyEqn /////////////////////////////////
+
+    // delete matrix_coeff;
+    // delete eqn;
+    // delete field;
+    // delete mesh;
+    // delete inputs;
 }

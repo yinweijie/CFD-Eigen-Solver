@@ -20,12 +20,6 @@ private:
     VectorXd d_LP, d_PR, d_BP, d_PT;
     // 标记是否已被赋值，0未赋值，1已赋值
     VectorXi flag_d_LP, flag_d_PR, flag_d_BP, flag_d_PT;
-    // // k*A/d
-    // VectorXd DA_L, DA_R, DA_B, DA_T;
-    // // F = rho * cp * U * A
-    // VectorXd F_l, F_r, F_b, F_t;
-    // // 网格左/右/下/上面速度
-    // VectorXd U_l, U_r, U_b, U_t;
     // 网格体积
     VectorXd V;
     // 网格数量
@@ -87,6 +81,18 @@ public:
     int right_of(int global_index) const { return (global_index + 1); }
     int bottom_of(int global_index) const { return (global_index - Nx); }
     int top_of(int global_index) const { return (global_index + Nx); }
+
+    const VectorXd& get_xCentroid() const { return xCentroid; }
+    const VectorXd& get_yCentroid() const { return yCentroid; }
+    const VectorXd& get_zCentroid() const { return zCentroid; }
+
+    const VectorXd& get_xFace() const { return xFace; }
+    const VectorXd& get_yFace() const { return yFace; }
+    const VectorXd& get_zFace() const { return zFace; }
+
+    int ix_of(int global_index) const { return (global_index % Nx); }
+    int iy_of(int global_index) const { return (global_index / Nx); }
+    int iz_of(int global_index) const { return (global_index / (Nx * Ny)); }
 };
 
 #endif

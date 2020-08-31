@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Field.h"
 #include "Inputs.h"
+#include "MatrixCoeff.h"
 
 class TransportEqn
 {
@@ -14,6 +15,9 @@ protected:
     Field* field;
 
     Inputs* inputs;
+
+    const Boundary* boundary;
+    const Source* source;
 
     // Energy Eqn: DA = k * A / d
     // Momentum Eqn: DA = mu * A / d
@@ -34,7 +38,8 @@ protected:
     void init_DA();
     void init_F();
 public:
-    TransportEqn(Mesh* mesh, Field* field, Inputs* inputs) : mesh(mesh), N(mesh->get_N()), field(field), inputs(inputs)
+    TransportEqn(Mesh* mesh, Field* field, Inputs* inputs, Boundary* boundary, Source* source)
+         : mesh(mesh), N(mesh->get_N()), field(field), inputs(inputs), boundary(boundary), source(source)
     {
         DA_w = VectorXd(N);
         DA_e = VectorXd(N);
@@ -51,18 +56,6 @@ public:
         rho = inputs->physcial_properties.rho;
     }
 
-    const VectorXd& get_DA_w() const { return DA_w; }
-    const VectorXd& get_DA_e() const { return DA_e; }
-    const VectorXd& get_DA_s() const { return DA_s; }
-    const VectorXd& get_DA_n() const { return DA_n; }
-
-    const VectorXd& get_F_w() const { return F_w; }
-    const VectorXd& get_F_e() const { return F_e; }
-    const VectorXd& get_F_s() const { return F_s; }
-    const VectorXd& get_F_n() const { return F_n; }
-
-    const VectorXd& get_S() const { return S; }
-
     void init()
     {
         init_DA();
@@ -76,6 +69,10 @@ public:
     // Energy Eqn: density = rho * cp
     // Momentum Eqn: density = rho
     virtual double density() = 0;
+
+    virtual TransportEqn& addConvectionTerm() = 0;
+    virtual TransportEqn& addDiffusionTerm() = 0;
+    virtual TransportEqn& addSourceTerm() = 0;
 };
 
 #endif
