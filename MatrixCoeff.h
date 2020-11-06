@@ -20,7 +20,7 @@ private:
     // 网格数量
     int N;
 
-    VectorXd aW, aE, aS, aN, aO, SO, Su;
+    VectorXd aW, aE, aS, aN, aO, SO, SE, SW, SN, SS, Su;
 
     VectorXd b_m;
     VectorXd x;
@@ -31,6 +31,9 @@ private:
      */
     DenseMatrixWrapper dense_matrix_wrapper;
     SparseMatrixWrapper sparse_matrix_wrapper;
+
+    double m_res;
+    double epsilon;
 
     friend T;
 public:
@@ -44,14 +47,23 @@ public:
         aO = VectorXd::Zero(N);
 
         SO = VectorXd::Zero(N);
+        SE = VectorXd::Zero(N);
+        SW = VectorXd::Zero(N);
+        SN = VectorXd::Zero(N);
+        SS = VectorXd::Zero(N);
+
         Su = VectorXd::Zero(N);
 
         b_m = VectorXd::Zero(N);
         x = VectorXd::Zero(N);
+
+        m_res = 0.0;
+        epsilon = 1.e-10;
     }
 
     VectorXd& get_b_m() { return b_m; }
     VectorXd& get_x() { return x; }
+    VectorXd& get_aO() { return aO; }
 
     // MatrixXd系数初始化
     void initDenseMatrix();
@@ -62,10 +74,10 @@ public:
     void init(MatrixInterface* matrix);
 
     // 系数矩阵存在非稀疏矩阵MatrixXd中，方便打印输出
-    void DebugSolve(VectorXd* field_var);
+    void DebugSolve(VectorXd& field_var);
 
     // 系数矩阵存在稀疏矩阵SparseMatrix中，用于迭代求解
-    void Solve(VectorXd* field_var);
+    void Solve(VectorXd& field_var, double& res, double tolerance = 1.e-10);
 };
 
 template <typename T>
@@ -110,49 +122,65 @@ void MatrixCoeff<T>::init(MatrixInterface* matrix)
 
         if(!mesh->is_at_left_boundary(i))
         {
-            matrix->setNum(i, i_l, -aW[i]);
+            matrix->setNum(i, i_l, -(aW[i] - SW[i]));
         }
         if(!mesh->is_at_right_boundary(i))
         {
-            matrix->setNum(i, i_r, -aE[i]);
+            matrix->setNum(i, i_r, -(aE[i] - SE[i]));
         }
         if(!mesh->is_at_bottom_boundary(i))
         {
-            matrix->setNum(i, i_b, -aS[i]);
+            matrix->setNum(i, i_b, -(aS[i] - SS[i]));
         }
         if(!mesh->is_at_top_boundary(i))
         {
-            matrix->setNum(i, i_t, -aN[i]);
+            matrix->setNum(i, i_t, -(aN[i] - SN[i]));
         }
     }
 }
 
 template <typename T>
-void MatrixCoeff<T>::DebugSolve(VectorXd* field_var)
+void MatrixCoeff<T>::DebugSolve(VectorXd& field_var)
 {
     initDenseMatrix();
 
     MatrixXd& A_m = dense_matrix_wrapper.getMatrix();
 
-    // 求解矩阵
-    (*field_var) = A_m.fullPivLu().solve(b_m);
-
     // 输出结果
-    cout << "A_m: " << endl << A_m << endl;
+    cout << "A_m: " << endl;
+    // for(int i = 0; i < A_m.rows(); i++)
+    // {
+    //     for(int j = 0; j < A_m.cols(); j++)
+    //     {
+    //         cout << A_m(i, j) << ", ";
+    //     }
+    //     cout << endl;
+    // }
+    cout << A_m << endl;
     cout << endl;
+
+    // 求解矩阵
+    field_var = A_m.fullPivLu().solve(b_m);
 
     cout << "b_m: " << endl << b_m << endl;
     cout << endl;
 
-    cout << "Solution: " << endl << (*field_var) << endl;
+    cout << "Solution: " << endl << field_var << endl;
 }
 
 template <typename T>
-void MatrixCoeff<T>::Solve(VectorXd* field_var)
+void MatrixCoeff<T>::Solve(VectorXd& field_var, double& res, double tolerance)
 {
     initSparseMatrix();
 
     SparseMatrix<double>& A_m = sparse_matrix_wrapper.getMatrix();
+    VectorXd& x = field_var;
+
+    // 计算残差
+    m_res = (b_m - A_m * x).norm();
+    res = m_res;
+
+    if(res < epsilon) return;
 
     // ref. http://eigen.tuxfamily.org/dox/classEigen_1_1BiCGSTAB.html
     // ref. http://eigen.tuxfamily.org/dox/group__TopicSparseSystems.html#TutorialSparseSolverConcept
@@ -160,13 +188,13 @@ void MatrixCoeff<T>::Solve(VectorXd* field_var)
 
     // BiCGSTAB<SparseMatrix<double>, Eigen::IdentityPreconditioner> solver;
     BiCGSTAB<SparseMatrix<double>, Eigen::IncompleteLUT<double>> solver;
-    solver.compute(A_m);
-    (*field_var) = solver.solve(b_m);
+    solver.compute(A_m).setTolerance(tolerance);
+    x = solver.solve(b_m);
 
-    std::cout << "#iterations:     " << solver.iterations() << std::endl;
+    std::cout << "# inner iterations:     " << solver.iterations() << std::endl;
     std::cout << "estimated error: " << solver.error()      << std::endl;
 
-    std::cout << "Solution: " << std::endl << (*field_var) << std::endl;
+    // std::cout << "Solution: " << std::endl << x << std::endl;
 }
 
 #endif

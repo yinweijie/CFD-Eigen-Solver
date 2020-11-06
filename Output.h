@@ -18,7 +18,9 @@ public:
 
     void write(const VectorXd& var, double bc_left, double bc_right, double bc_top, double bc_bottom, string varName)
     {
-        ofstream tempFile("Temp.csv");
+        string FileName = varName + ".csv"s;
+
+        ofstream tempFile(FileName);
 
         tempFile << "x, " << "y, " << "z, " << varName << endl;
 

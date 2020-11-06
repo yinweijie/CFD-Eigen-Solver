@@ -14,7 +14,10 @@ private:
     MatrixXd m_dense_matrix;
 public:
     DenseMatrixWrapper() = default;
-    DenseMatrixWrapper(int row, int col) : m_dense_matrix(row, col) { }
+    DenseMatrixWrapper(int row, int col)
+    {
+        m_dense_matrix = MatrixXd::Zero(row, col); 
+    }
 
     void setNum(int row, int col, double value)
     {

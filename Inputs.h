@@ -19,6 +19,8 @@ struct PhysicalPropterties
     double rho;
     // 比热容 J/kg/k
     double cp;
+    // 动力粘度 kg/(m.s)
+    double mu;
 };
 
 struct Boundary
@@ -33,6 +35,21 @@ struct Boundary
     double T_top;
     // 左边界热流密度 (W/m^2)
     double q_w;
+
+    double U_left;
+    double U_right;
+    double U_top;
+    double U_bottom;
+
+    double V_left;
+    double V_right;
+    double V_top;
+    double V_bottom;
+
+    double p_left;
+    double p_right;
+    double p_top;
+    double p_bottom;
 };
 
 struct Source

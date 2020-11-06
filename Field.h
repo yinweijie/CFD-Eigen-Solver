@@ -17,6 +17,8 @@ struct Field
 
     VectorXd T; // Temperature
 
+    VectorXd p; // Pressure
+
     Field(int N)
     {
         u = VectorXd::Zero(N);
@@ -25,6 +27,10 @@ struct Field
         u_w = VectorXd::Zero(N);
         v_n = VectorXd::Zero(N);
         v_s = VectorXd::Zero(N);
+
+        T = VectorXd::Zero(N);
+
+        p = VectorXd::Zero(N);
     }
 };
 

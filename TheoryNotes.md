@@ -770,7 +770,7 @@ $$
 $$
 \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0
 $$
-最终可以将动量方程简化为：
+最终可以将动量方程简化为： 
 $$
 \frac{\partial(\rho u)}{\partial t}+\nabla \cdot(\rho \bar{u} u)=-\frac{\partial p}{\partial x}+\nabla \cdot(\mu \nabla u)+S x \\
 \frac{\partial(\rho v)}{\partial t}+\nabla \cdot(\rho \bar{u} v)=-\frac{\partial p}{\partial y}+\nabla \cdot(\mu \nabla v)+S y
@@ -996,7 +996,7 @@ a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{East wall:}\quad S^u = \left(\frac{p_W + p_O}{2} - p_O \right)A_x = \left(\frac{p_W - p_O}{2} \right)A_x\\
-\text{West wall:}\quad S^u = \left(p_O - \frac{p_O + p_E}{2} \right)A_x = \left(\frac{p_W - p_O}{2} \right)A_x
+\text{West wall:}\quad S^u = \left(p_O - \frac{p_O + p_E}{2} \right)A_x = \left(\frac{p_O - p_E}{2} \right)A_x
 $$
 **注意**：边界系数有叠加效果，例如，某个网格左侧和顶部都是壁面，则这个网格的$a_W = 0, a_N = 0$，其他系数也会叠加。
 
@@ -1034,11 +1034,11 @@ J_{e}^{u} &=\rho_{e} u_{e} \phi^u_{e}-\left.\mu_{e} \frac{\partial \phi^u}{\part
 J_{w}^{u} &=\rho_{w} u_{w} \phi^u_{w}-\left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w} = \rho_{in}u_{in}u_{in} - \left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w} \\
 &\approx \rho_{in}u_{in}u_{in} -\mu_w\frac{9 u_{O}-u_{E}-8 u_{w}}{3 \Delta x}=\rho_{in}u_{in}u_{in}-\mu_w\frac{9 u_{O}-u_{E}-8u_{in}}{3 \Delta x}\\
 
-J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{in}u_{in}u_{in} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \\
-&\approx \rho_{in}u_{in}u_{in}-\mu_n\frac{-9 u_{O}+u_{S}+8 u_{n}}{3 \Delta y}=\rho_{in}u_{in}u_{in}-\mu_n\frac{-9 u_{O}+u_{S}+8u_{in}}{3 \Delta y}\\
+J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{in}v_{in}u_{in} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \\
+&\approx \rho_{in}v_{in}u_{in}-\mu_n\frac{-9 u_{O}+u_{S}+8 u_{n}}{3 \Delta y}=\rho_{in}v_{in}u_{in}-\mu_n\frac{-9 u_{O}+u_{S}+8u_{in}}{3 \Delta y}\\
 
-J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{in}u_{in}u_{in} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} \\
-&\approx \rho_{in}u_{in}u_{in}-\mu_s\frac{9 u_{O}-u_{N}-8 u_{s}}{3 \Delta y}=\rho_{in}u_{in}u_{in}-\mu_s\frac{9 u_{O}-u_{N}-8u_{in}}{3 \Delta y}
+J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{in}v_{in}u_{in} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} \\
+&\approx \rho_{in}v_{in}u_{in}-\mu_s\frac{9 u_{O}-u_{N}-8 u_{s}}{3 \Delta y}=\rho_{in}v_{in}u_{in}-\mu_s\frac{9 u_{O}-u_{N}-8u_{in}}{3 \Delta y}
 
 \end{aligned}
 $$
@@ -1051,13 +1051,13 @@ p_s \approx p_O, \quad \mu_s \approx \mu_O \\
 $$
 Link coefficient形式：
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
@@ -1070,13 +1070,13 @@ $$
 
 Link Coefficient形式（$\phi^v = v$）：
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O v_O = (a_E-S_E) v_E + (a_W-S_W) v_W + (a_N-S_N) v_N + (a_S-S_S) v_S + S^v + S_u \\
@@ -1099,11 +1099,11 @@ J_{e}^{u} &=\rho_{e} u_{e} \phi^u_{e}-\left.\mu_{e} \frac{\partial \phi^u}{\part
 J_{w}^{u} &=\rho_{w} u_{w} \phi^u_{w}-\left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w} = \rho_{O}u_{O}u_{O} - \left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w} \\
 &\approx \rho_{O}u_{O}u_{O} -\mu_w\frac{9 u_{O}-u_{E}-8 u_{w}}{3 \Delta x}=\rho_{O}u_{O}u_{O}-\mu_w\frac{9 u_{O}-u_{E}-8u_{O}}{3 \Delta x}\\
 
-J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{O}u_{O}u_{O} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \\
-&\approx \rho_{O}u_{O}u_{O}-\mu_n\frac{-9 u_{O}+u_{S}+8 u_{n}}{3 \Delta y}=\rho_{O}u_{O}u_{O}-\mu_n\frac{-9 u_{O}+u_{S}+8u_{O}}{3 \Delta y}\\
+J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{O}v_{O}u_{O} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \\
+&\approx \rho_{O}v_{O}u_{O}-\mu_n\frac{-9 u_{O}+u_{S}+8 u_{n}}{3 \Delta y}=\rho_{O}v_{O}u_{O}-\mu_n\frac{-9 u_{O}+u_{S}+8u_{O}}{3 \Delta y}\\
 
-J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{O}u_{O}u_{O} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} \\
-&\approx \rho_{O}u_{O}u_{O}-\mu_s\frac{9 u_{O}-u_{N}-8 u_{s}}{3 \Delta y}=\rho_{O}u_{O}u_{O}-\mu_s\frac{9 u_{O}-u_{N}-8u_{O}}{3 \Delta y}
+J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{O}v_{O}u_{O} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} \\
+&\approx \rho_{O}v_{O}u_{O}-\mu_s\frac{9 u_{O}-u_{N}-8 u_{s}}{3 \Delta y}=\rho_{O}v_{O}u_{O}-\mu_s\frac{9 u_{O}-u_{N}-8u_{O}}{3 \Delta y}
 
 \end{aligned}
 $$
@@ -1122,9 +1122,9 @@ $$
 
 \text{West in:}\quad a_W = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
@@ -1141,9 +1141,9 @@ $$
 
 \text{West in:}\quad a_W = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O v_O = (a_E-S_E) v_E + (a_W-S_W) v_W + (a_N-S_N) v_N + (a_S-S_S) v_S + S^v + S_u \\
@@ -1164,9 +1164,9 @@ J_{e}^{u} &=\rho_{e} u_{e} \phi^u_{e}-\left.\mu_{e} \frac{\partial \phi^u}{\part
 
 J_{w}^{u} &=\rho_{w} u_{w} \phi^u_{w}-\left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w} = \rho_{O}u_{O}u_{O} - \left.\mu_{w} \frac{\partial \phi^u}{\partial x}\right|_{w}\approx \rho_{O}u_{O}u_{O}\\
 
-J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{O}u_{O}u_{O} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \approx \rho_{O}u_{O}u_{O}\\
+J_{n}^{u} &=\rho_{n} v_{n} \phi^u_{n}-\left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} = \rho_{O}v_{O}u_{O} - \left.\mu_{n} \frac{\partial \phi^u}{\partial y}\right|_{n} \approx \rho_{O}v_{O}u_{O}\\
 
-J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{O}u_{O}u_{O} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s}\approx \rho_{O}u_{O}u_{O}
+J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s} = \rho_{O}v_{O}u_{O} - \left.\mu_{s} \frac{\partial \phi^u}{\partial y}\right|_{s}\approx \rho_{O}v_{O}u_{O}
 
 \end{aligned}
 $$
@@ -1185,9 +1185,9 @@ $$
 
 \text{West in:}\quad a_W = 0, \quad -S_O = -\rho_O u_O A_x, \quad -S_E = 0, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \rho_O u_O A_y, \quad -S_S = 0, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \rho_O v_O A_y, \quad -S_S = 0, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O u_O A_y, \quad -S_N = 0, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O v_O A_y, \quad -S_N = 0, \quad S_u = 0\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
@@ -1204,9 +1204,9 @@ $$
 
 \text{West in:}\quad a_W = 0, \quad -S_O = -\rho_O u_O A_x, \quad -S_E = 0, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \rho_O u_O A_y, \quad -S_S = 0, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad -S_O = \rho_O v_O A_y, \quad -S_S = 0, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O u_O A_y, \quad -S_N = 0, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O v_O A_y, \quad -S_N = 0, \quad S_u = 0\\
 
 a_O = a_E + a_W + a_N + a_S - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
