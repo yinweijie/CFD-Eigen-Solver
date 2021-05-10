@@ -34,7 +34,7 @@ int main()
     field->v_n.setConstant(0.0); field->v_s.setConstant(0.0);
 
     //////////////////////////////// MomentumEqn /////////////////////////////////
-    // 创建能量方程系数矩阵
+    // 创建动量方程系数矩阵
     MatrixCoeff<XMomentumEqn>* xMatrixCoeff = new MatrixCoeff<XMomentumEqn>(mesh);
     MatrixCoeff<YMomentumEqn>* yMatrixCoeff = new MatrixCoeff<YMomentumEqn>(mesh);
 
