@@ -45,13 +45,6 @@ $$
 \max \left(\rho_s v_s, 0\right) = \frac{\left|(\rho v)_{s}\right|+(\rho v)_{s}}{2} \qquad 
 \max \left(-\rho_s v_s, 0\right) = \frac{\left|(\rho v)_{s}\right|-(\rho v)_{s}}{2}
 $$
-因此有：
-$$
-\max(\rho_e u_e, 0) - \rho_e u_e = \max(-\rho_e u_e, 0) \qquad
-\max(-\rho_e u_e, 0) + \rho_e u_e = \max(\rho_e u_e, 0) \\
-\vdots
-$$
-其他类似。
 
 对于动量方程，只需要把$\phi$替换为$u$即可。
 

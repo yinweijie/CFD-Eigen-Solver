@@ -827,10 +827,10 @@ $$
 离散形式：
 $$
 \begin{aligned}
-&\left[\phi_{O} \max \left(\rho_e u_e, 0\right)-\phi_{E} \max \left(-\rho_e u_e, 0\right)-\mu_{e} \frac{u_{E}-u_{O}}{\Delta x}\right] A_x\\
--&\left[\phi_{W} \max \left(\rho_w u_w, 0\right)-\phi_{O} \max \left(-\rho_w u_w, 0\right)-\mu_{w} \frac{u_{O}-u_{W}}{\Delta x}\right] A_x\\
-+&\left[\phi_{O} \max \left(\rho_n v_n, 0\right)-\phi_{N} \max \left(-\rho_n v_n, 0\right)-\mu_{n} \frac{u_{N}-u_{O}}{\Delta y}\right] A_y\\
--&\left[\phi_{S} \max \left(\rho_s v_s, 0\right)-\phi_{O} \max \left(-\rho_s v_s, 0\right)-\mu_{s} \frac{u_{O}-u_{S}}{\Delta y}\right] A_y=-\left(p_{e}-p_{w}\right) A_x = \frac{1}{2}\left(p_{W}-p_{E}\right) A_x
+&\left[\phi_{O}^u \max \left(\rho_e u_e, 0\right)-\phi_{E}^u \max \left(-\rho_e u_e, 0\right)-\mu_{e} \frac{\phi_{E}^u-\phi_{O}^u}{\Delta x}\right] A_x\\
+-&\left[\phi_{W}^u \max \left(\rho_w u_w, 0\right)-\phi_{O}^u \max \left(-\rho_w u_w, 0\right)-\mu_{w} \frac{\phi_{O}^u-\phi_{W}^u}{\Delta x}\right] A_x\\
++&\left[\phi_{O}^u \max \left(\rho_n v_n, 0\right)-\phi_{N}^u \max \left(-\rho_n v_n, 0\right)-\mu_{n} \frac{\phi_{N}^u-\phi_{O}^u}{\Delta y}\right] A_y\\
+-&\left[\phi_{S}^u \max \left(\rho_s v_s, 0\right)-\phi_{O}^u \max \left(-\rho_s v_s, 0\right)-\mu_{s} \frac{\phi_{O}^u-\phi_{S}^u}{\Delta y}\right] A_y=-\left(p_{e}-p_{w}\right) A_x = \frac{1}{2}\left(p_{W}-p_{E}\right) A_x
 \end{aligned}
 $$
 写成Link coefficient形式：
