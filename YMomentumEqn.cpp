@@ -47,24 +47,28 @@ TransportEqn& YMomentumEqn::addConvectionTerm()
             mat->aW[i] = 0.0; // 左边界
             mat->SO[i] += 0.0;
             mat->Su[i] += 0.0;
+            F_w[i] = 0;
         }
         if(mesh->is_at_right_boundary(i))
         {
             mat->aE[i] = 0.0; // 右边界
             mat->SO[i] += 0.0;
             mat->Su[i] += 0.0;
+            F_e[i] = 0;
         }
         if(mesh->is_at_bottom_boundary(i))
         {
             mat->aS[i] = 0; // 下边界
             mat->SO[i] += 0.0;
             mat->Su[i] += 0.0;
+            F_s[i] = 0;
         }
         if(mesh->is_at_top_boundary(i))
         {
             mat->aN[i] = 0; // 上边界
-            mat->SO[i] += DA_w[i] / 3;
+            mat->SO[i] += 0;
             mat->Su[i] += -rho * V_t * V_t;
+            F_n[i] = 0;
         }
     }
 
