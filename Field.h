@@ -10,6 +10,9 @@ struct Field
     VectorXd v; // Y direction
 
     // face value of the velocity
+    // Todo: 
+    // 这里可以做性能优化，例如 i 网格的 u_e 等于 i+1 网格的 u_w
+    // 只用保留其中一个即可
     VectorXd u_e; // east face u velocity
     VectorXd u_w; // west face u velocity
     VectorXd v_n; // north face v velocity
@@ -18,6 +21,8 @@ struct Field
     VectorXd T; // Temperature
 
     VectorXd p; // Pressure
+
+    int cellNum; // number of cells
 
     Field(int N)
     {
@@ -31,6 +36,8 @@ struct Field
         T = VectorXd::Zero(N);
 
         p = VectorXd::Zero(N);
+
+        cellNum = N;
     }
 };
 

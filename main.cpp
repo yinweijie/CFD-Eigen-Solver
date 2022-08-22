@@ -9,6 +9,7 @@
 #include "XMomentumEqn.h"
 #include "YMomentumEqn.h"
 #include "Output.h"
+#include "PWIM.h"
 
 #define MAM_ITER 2000
  
@@ -28,10 +29,10 @@ int main()
     Field* field = new Field(mesh->get_N());
 
     // 初始化field
-    field->u.setConstant(0.0); field->v.setConstant(0.0);
-    field->p.setConstant(0.0); field->T.setConstant(0.0);
-    field->u_e.setConstant(0.0); field->u_w.setConstant(0.0);
-    field->v_n.setConstant(0.0); field->v_s.setConstant(0.0);
+    field->u.setConstant(0.0);      field->v.setConstant(0.0);
+    field->p.setConstant(0.0);      field->T.setConstant(0.0);
+    field->u_e.setConstant(0.0);    field->u_w.setConstant(0.0);
+    field->v_n.setConstant(0.0);    field->v_s.setConstant(0.0);
 
     //////////////////////////////// MomentumEqn /////////////////////////////////
     // 创建动量方程系数矩阵
@@ -57,6 +58,8 @@ int main()
     double res_v = 0.0;
     double res_p = 0.0;
 
+    PWIM pwim(inputs, field, mesh, xMatrixCoeff, yMatrixCoeff);
+
     // for(int iter = 0; iter < MAM_ITER; iter++)
     // {
         /* call links */ // 计算Link coefficient，并初始化矩阵系数
@@ -77,7 +80,7 @@ int main()
 
         /* call face_velocity */ // Face Velocity using PWIM
 
-
+        pwim.updateFaceVel();
 
         /* call solve_pp */
 

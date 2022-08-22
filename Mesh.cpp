@@ -2,10 +2,9 @@
 
 void Mesh::initMesh(const Inputs* inputs)
 {
-    // x方向网格长度
-    double dx = inputs->geometry.XLen / Nx;
-    double dy = inputs->geometry.YLen / Ny;
-    double dz = inputs->geometry.ZLen / Nz;
+    dx = inputs->geometry.XLen / Nx;
+    dy = inputs->geometry.YLen / Ny;
+    dz = inputs->geometry.ZLen / Nz;
 
     // 网格横截面积
     Ax = dy * dz;

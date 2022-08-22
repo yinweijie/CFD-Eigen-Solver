@@ -26,9 +26,13 @@ private:
     int Nx, Ny, Nz, N;
     // 网格横截面积
     double Ax, Ay, Az;
+    // 网格长度
+    double dx, dy, dz;
+
 private:
     // 初始化网格
     void initMesh(const Inputs* inputs);
+
 public:
     Mesh(const Inputs* inputs) : Nx(inputs->Nx), Ny(inputs->Ny), Nz(inputs->Nz), N(Nx*Ny*Nz)
     {
@@ -67,6 +71,10 @@ public:
     double get_Ax() const { return Ax; }
     double get_Ay() const { return Ay; }
     double get_Az() const { return Az; }
+
+    double get_dx() const { return dx; }
+    double get_dy() const { return dy; }
+    double get_dz() const { return dz; }
 
     // 判断网格是否紧邻边界
     bool is_at_left_boundary(int global_index) const { return ((global_index % Nx) == 0); }

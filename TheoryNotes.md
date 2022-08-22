@@ -3,14 +3,19 @@
 ## 一维扩散
 
 一维扩散过程可以用如下方程描述：
+
 $$
 \int_{V}\left[\frac{d}{d x}\left(k \frac{d T}{d x}\right)\right] \mathrm{d} V+\bar{S} \int_{V} \mathrm{d} V=0
 $$
+
 根据散度定理，可以将体积分转换为面积分：
+
 $$
 \int_{A}\left(k \frac{\mathrm{d} T}{\mathrm{d} x} n_{x}\right) \mathrm{d} A+\bar{S} V=0
 $$
+
 对于一个网格，需要知道右侧（$r$）网格面上的梯度和网左侧（$l$）格面上的梯度。直观理解就是，$e$面扩散出去的能量与$w$面扩散进入的能量之差，代表总的扩散引起的能量变化，平衡状态下，这部分应该刚好等于内部源项的产生：
+
 $$
 \left(k A \frac{d T}{d x}\right)_{r}-\left(k A \frac{d T}{d x}\right)_{l}+\bar{S} V=0
 $$
@@ -22,31 +27,41 @@ $$
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200720202136.png)
 
 方程可进一步表示为：
+
 $$
 \left(k_{r} A_{r} \frac{T_{R}-T_{P}}{d_{P R}}\right)-\left(k_{l} A_{l} \frac{T_{P}-T_{L}}{d_{L P}}\right)+\bar{S} V=0
 $$
+
 这里，未知数为$T_R$，$T_P$，$T_L$，重新整理得到：
+
 $$
 T_{P}\left(\frac{k_{l} A_{l}}{d_{L P}}+\frac{k_{r} A_{r}}{d_{P R}}\right)=T_{L}\left(\frac{k_{l} A_{l}}{d_{L P}}\right)+T_{R}\left(\frac{k_{r} A_{r}}{d_{P R}}\right)+\bar{S} V
 $$
+
 为了方便书写，引入系数$D = k/d$，上式可简写为：
+
 $$
 T_{P}\left(D_{l} A_{l}+D_{r} A_{r}\right)=T_{L}\left(D_{l} A_{l}\right)+T_{R}\left(D_{r} A_{r}\right)+\bar{S} V
 $$
+
 需要注意的是，$k_l$是左侧面上的扩散系数，$d_{LP}$是左侧点与中心点的距离，$A_l$是左侧面的面积，$D_l = k_l/d_{LP}$。右侧类似。
 
 系数用$a$来表示，源项用$S_u$来表示：
+
 $$
 a_{p} T_{P}=a_{L} T_{L}+a_{R} T_{R}+S_{u}\\
 T_{P} \underbrace{\left(D_{l} A_{l}+D_{r} A_{r}+0\right)}_{a_{p}}=T_{L} \underbrace{\left(D_{l} A_{l}\right)}_{a_{L}}+T_{R} \underbrace{\left(D_{r} A_{r}\right)}_{a_{R}}+\underbrace{\bar{S} V}_{S_{u}}
 $$
+
 其中：
+
 $$
 \begin{array}{c}
 a_{p}=a_{L}+a_{R}-S_{p} \quad a_{L}=D_{l} A_{l} \quad a_{R}=D_{r} A_{r} \\
 S_{P}=0 \quad S_{u}=\bar{S} V
 \end{array}
 $$
+
 可以发现中心点系数正好等于左右点系数之和，再额外考虑$S_p$的作用，这里$S_p$是边界条件引入的不规则系数，在后面会出现。
 
 - 左边界
@@ -56,24 +71,32 @@ $$
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200720213325.png)
 
 此时边界第一层网格的控制方程可以写成：
+
 $$
 \left(k_{r} A_{r} \frac{T_{R}-T_{P}}{d_{P R}}\right)-\left(k_{l} A_{l} \frac{T_{P}-T_{A}}{d_{L P} / 2}\right)+\bar{S} V=0
 $$
+
 将系数整理一下：
+
 $$
 a_{p} T_{P}=a_{L} T_{L}+a_{R} T_{R}+S_{u}\\
 T_{P} \underbrace{\left(0+D_{r} A_{r}+2 D_{l} A_{l}\right)}_{a_{P}}=T_{L} \underbrace{(0)}_{a_{L}}+T_{R} \underbrace{\left(D_{r} A_{r}\right)}_{a_{R}}+\underbrace{T_{A}\left(2 D_{l} A_{l}\right)+\bar{S} V}_{S_{u}}
 $$
+
 其中：
+
 $$
 a_{L}=0 \quad a_{R}=D_{r} A_{r} \quad a_{p}=a_{L}+a_{R}-S_{p}\\
 S_{P}=-2 D_{l} A_{l} \quad S_{u}=T_{A}\left(2 D_{l} A_{l}\right)+\bar{S} V
 $$
+
 将上面内部网格的形式放在这做对比：
+
 $$
 a_{p} T_{P}=a_{L} T_{L}+a_{R} T_{R}+S_{u}\\
 T_{P} \underbrace{\left(D_{l} A_{l}+D_{r} A_{r}+0\right)}_{a_{p}}=T_{L} \underbrace{\left(D_{l} A_{l}\right)}_{a_{L}}+T_{R} \underbrace{\left(D_{r} A_{r}\right)}_{a_{R}}+\underbrace{\bar{S} V}_{S_{u}}
 $$
+
 和上面内网格形式对比可以发现，边界网格$T_P$的系数$a_L$消失了，多出来一个不规则项$-S_p$，源项也多出来一部分$T_{A}\left(2 D_{l} A_{l}\right)$。因此，边界条件的引入会改变$T_p$的系数，还会引入额外源项。
 
 - 右边界
@@ -83,24 +106,31 @@ $$
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200720220053.png)
 
 右边界网格的控制方程可以写成：
+
 $$
 \left(k_{r} A_{r} \frac{T_{B}-T_{P}}{d_{P R} / 2}\right)-\left(k_{l} A_{l} \frac{T_{P}-T_{L}}{d_{L P}}\right)+\bar{S} V=0
 $$
+
 整理系数后：
+
 $$
 a_{p} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}\\
 T_{P} \underbrace{\left(D_{l} A_{l}+0+2 D_{r} A_{r}\right)}_{a_{p}}=T_{L} \underbrace{\left(D_{l} A_{l}\right)}_{a_{L}}+T_{R} \underbrace{(0)}_{a_{R}}+\underbrace{T_{B}\left(2 D_{r} A_{r}\right)+\bar{S} V}_{S_{u}}
 $$
+
 其中：
+
 $$
 \begin{array}{c}
 a_{L}=D_{l} A_{l} \quad a_{R}=0 \quad a_{p}=a_{L}+a_{R}-S_{p} \\
 S_{P}=-2 D_{r} A_{r} \quad S_{u}=T_{B}\left(2 D_{r} A_{r}\right)+\bar{S} V
 \end{array}
 $$
+
 可以发现$a_R$消失了，多出来$-S_p$，以及源项$T_{B}\left(2 D_{r} A_{r}\right)$。
 
 系数可以总结为：
+
 $$
 \begin{array}{lccccc} 
 \hline
@@ -112,7 +142,9 @@ $$
 \hline
 \end{array}
 $$
+
 最终可以形成矩阵：
+
 $$
 \left[\begin{array}{ccccc}
 a_{p 1} & -a_{r 1} & 0 & 0 & 0 \\
@@ -169,19 +201,13 @@ int main()
 }
 ```
 
-
-
 `initMesh`被封装到`Mesh`类中，主要是根据传入的计算域长度和网格个数，计算出**每个网格**的中心点坐标以及表格中的$a_L$、$a_R$、$a_P$、$S_p$和$S_u$。
 
 这里为了计算这些值，还需要计算$D_LA_L = k_lA_l/d_{LP}$、$D_R A_R = k_r A_r / d_{PR}$、$\bar{S}V$。
 
 这里$k_l, k_r$分别是网格左/右表面处的传热系数，$A_l, A_r$分别是网格左/右表面的面积，$d_{LP}, d_{PR}$分别是网格中心与左/右相邻网格中心的距离，$\bar{S}$是单位体积的热源（$W/m^3$)，$V$是网格体积。
 
-
-
 `initMatrix`被封装到`MatrixCoeff`类中，接收`Mesh`对象，并利用`Mesh`中的$a_L$、$a_R$、$a_P$、$S_p$和$S_u$去初始化系数矩阵，这里初始化的时候，边界处的网格未知数($T_1, T_5$)需要特殊处理。
-
-
 
 代码见：`solver_cpp_archive\2.1DDiffusion_OOP`
 
@@ -194,6 +220,7 @@ int main()
 ## 一维对流-扩散
 
 一维对流-扩散控制方程：
+
 $$
 \int_{V} \nabla \cdot\left(\rho c_{p} \boldsymbol{U} T\right) \mathrm{d} V=\int_{V} \nabla \cdot(k \nabla T) \mathrm{d} V+\int_{V} S \mathrm{d} V
 $$
@@ -201,29 +228,38 @@ $$
 - 内部点
 
 离散后有：
+
 $$
 \underbrace{\rho_{r} c_{p r} U_{r} T_{r} A_{r}-\rho_{l} c_{p l} U_{l} T_{l} A_{l}}_{\text {Convection }}=\underbrace{k_{r} A_{r} \frac{T_{R}-T_{P}}{d_{P R}}-k_{l} A_{l} \frac{T_{P}-T_{L}}{d_{L P}}+\bar{S} V}_{\text {Diffusion }}
 $$
+
 和前面类似，定义简化符号来代替网格相关的常量：
+
 $$
 \begin{array}{l}
 D=k / d \quad\left[\mathrm{W} / \mathrm{m}^{2} \mathrm{K}\right] \\
 F=\rho c_{p} U A \quad[\mathrm{W} / \mathrm{K}]
 \end{array}
 $$
+
 上面的离散方程可以写成：
+
 $$
 F_{r} T_{r}-F_{l} T_{l}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-D_{l} A_{l}\left(T_{P}-T_{L}\right)+\bar{S} V
 $$
+
 类似的，需要对网格面上的点进行差值：
 
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200724213855.png)
 
 得到：
+
 $$
 \frac{F_{r}}{2}\left(T_{P}+T_{R}\right)-\frac{F_{l}}{2}\left(T_{L}+T_{P}\right)=D_{r} A_{r}\left(T_{R}-T_{P}\right)-D_{l} A_{l}\left(T_{P}-T_{L}\right)+\bar{S} V
 $$
+
 归并相同的项：
+
 $$
 \begin{array}{l}
 T_{P}\underbrace{\left[\left(D_{l} A_{l}+\frac{F_{l}}{2}\right)+\left(D_{r} A_{r}-\frac{F_{r}}{2}\right)+\left(F_{r}-F_{l}\right)\right]}_{a_{p}}= \\
@@ -239,6 +275,7 @@ $$
 $$
 
 归并同类项：
+
 $$
 \begin{array}{l}
 T_{P}\left[0+\left(D_{r} A_{r}-\frac{F_{r}}{2}\right)+\left(F_{r}-F_{l}\right)+\left(2 D_{l} A_{l}+F_{l}\right)\right]= \\
@@ -253,13 +290,16 @@ F_{r} T_{B}-\frac{F_{l}}{2}\left(T_{L}+T_{P}\right)=2 D_{r} A_{r}\left(T_{B}-T_{
 $$
 
 归并同类项：
+
 $$
 \begin{array}{l}
 T_{P}\left[\left(D_{l} A_{l}+\frac{F_{l}}{2}\right)+0+\left(F_{r}-F_{l}\right)+\left(2 D_{r} A_{r}-F_{r}\right)\right]= \\
 T_{L}[\underbrace{\left.D_{l} A_{l}+\frac{F_{l}}{2}\right]}_{a_{L}}+T_{R} \underbrace{[0]}_{a_{R}}+\underbrace{T_{B}\left[2 D_{r} A_{r}-F_{r}\right]+\bar{S} V}_{S_{u}}
 \end{array}
 $$
+
 左右边界推导类似，只不过由于边界条件的存在，会引入不规则系数和源项，最终的系数如下表所示：
+
 $$
 \begin{array}{lcccc} 
 \hline
@@ -277,12 +317,14 @@ a_{P}=a_{L}+a_{R}+\left(F_{r}-F_{l}\right)-S_{p}
 $$
 
 其中：
+
 $$
 D_LA_L = k_lA_l/d_{LP} \\
 D_R A_R = k_r A_r / d_{PR} \\
 F_l = \rho c_p U_l A_l \\
 F_r = \rho c_p U_r A_r
 $$
+
 与扩散项相比，多出来了与$F$相关的量，这是对流通量引入的。
 
 - 算例
@@ -298,6 +340,7 @@ $$
 ## 一阶迎风格式
 
 一阶迎风格式在构造网格面的值的时候，只选取上游网格的值，因此在构造面值的时候，需要考虑流动方向，对于如下方程：
+
 $$
 F_{r} T_{r}-F_{l} T_{l}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-D_{l} A_{l}\left(T_{P}-T_{l}\right)+\bar{S} V
 $$
@@ -305,24 +348,33 @@ $$
 - 内部点
 
 如果流动是**从左到右**，左边的对流项可以写为：
+
 $$
 F_{r} T_{P}-F_{l} T_{L}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-D_{l} A_{l}\left(T_{P}-T_{L}\right)+\bar{S} V
 $$
+
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200727161942.png)
 
 归并同类项得到：
+
 $$
 T_{P} \underbrace{\left[D_{l} A_{l}+F_{l}+D_{r} A_{r}+\left(F_{r}-F_{l}\right)\right]}_{a_{p}}=T_{L} \underbrace{\left[D_{l} A_{l}+F_{l}\right]}_{a_{L}}+T_{R} \underbrace{\left[D_{r} A_{r}\right]}_{a_{R}}+\underbrace{\bar{S}_{V}}_{S_{u}}
 $$
+
 如果流动**从右到左**：
+
 $$
 T_{P} \underbrace{\left[D_{l} A_{l}+D_{r} A_{r}-F_{r}+\left(F_{r}-F_{l}\right)\right]}_{a_{P}}=T_{L} \underbrace{\left[D_{l} A_{l}\right]}_{a_{L}}+T_{R} \underbrace{\left[D_{l} A_{l}-F_{r}\right]}_{a_{R}}+\underbrace{\bar{S} V}_{S_{u}}
 $$
+
 写成通用形式：
+
 $$
 a_{P} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}
 $$
+
 其中：
+
 $$
 \begin{aligned}
 a_{L} &=D_{l} A_{l}+\max \left(F_{l}, 0\right) \\
@@ -332,35 +384,47 @@ S_{P} &=0 \\
 S_{u} &=\bar{S} V
 \end{aligned}
 $$
+
 可以看到，流动对$a_L$和$a_R$的贡献只来自上游，对于$a_L$，只有流动从左到右（即$F_l>0$）才对其有贡献，对于$a_R$，只有流动从右到左（即$F_r<0$）才对其有贡献。
 
 - 左边界
 
 流动从左向右：
+
 $$
 F_{r} T_{P}-F_{l} T_{A}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-2 D_{l} A_{l}\left(T_{P}-T_{A}\right)
 $$
+
 归并同类项：
+
 $$
 T_{P} \underbrace{\left[0+D_{r} A_{r}+\left(F_{r}-F_{l}\right)+2 D_{l} A_{l}+F_{l}\right]}_{a_{p}}=T_{L} \underbrace{[0]}_{a_{L}}+T_{R} \underbrace{\left[D_{r} A_{r}\right]}_{a_{R}}+\underbrace{T_{A}\left[2 D_{l} A_{l}+F_{l}\right]}_{S_{u}}
 $$
+
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200727163110.png)
 
 **对于左边界，如果流动从右向左，需要注意**，对流项中，不再有边界值的出现，边界值由上游值决定：
+
 $$
 F_{r} T_{R}-F_{l} T_{P}=D_{r} A_{r}\left(T_{R}-T_{P}\right)-2 D_{l} A_{l}\left(T_{P}-T_{A}\right)
 $$
+
 归并同类项：
+
 $$
 T_{P} \underbrace{\left[0+D_{r} A_{r}-F_{r}+\left(F_{r}-F_{l}\right)+2 D_{l} A_{l}\right]}_{a_{p}}=T_{L} \underbrace{[0]}_{a_{L}}+T_{R} \underbrace{\left[D_{r} A_{r}-F_{r}\right]}_{a_{R}}+\underbrace{T_{A}\left[2 D_{l} A_{l}\right]}_{S_{u}}
 $$
+
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200727163414.png)
 
-归并同类项：
+简写为：
+
 $$
 a_{P} T_{p}=a_{L} T_{L}+a_{R} T_{R}+S_{u}
 $$
+
 其中：
+
 $$
 \begin{array}{l}
 a_{L}=0 \\
@@ -374,6 +438,7 @@ $$
 - 右边界
 
 推导类似，最终结果总结到下表中。
+
 $$
 \begin{array}{cccc} 
 \hline
@@ -393,6 +458,7 @@ a_{P}=a_{L}+a_{R}+\left(F_{r}-F_{l}\right)-S_{p}
 $$
 
 其中：
+
 $$
 D_LA_L = k_lA_l/d_{LP} \\
 D_R A_R = k_r A_r / d_{PR} \\
@@ -404,6 +470,95 @@ $$
 
 只需要修改`MatrixCoeff`中的`aL`、`aR`、`Sp`和`Su`即可。
 
+## 一阶迎风格式的再推导
+
+- 内部点
+
+对于上面迎风格式推导Link Coefficient的方式，有些繁琐，其实理解了原理以后，可以有更简便的推导方式，这里为了突出重点，先忽略扩散项：
+
+$$
+F_r T_R - F_l T_L = \\ 
+\left[T_P \max(F_r, 0) - T_R \max(-F_r, 0)\right] - \left[T_L \max(F_l, 0) - T_P \max(-F_l, 0)\right] = 0 \\
+\Downarrow\\
+T_P\underbrace{\left[\max(F_r, 0) + \max(-F_l, 0)\right]}_{a_P} = T_L \underbrace{\max(F_l, 0)}_{a_L} + T_R \underbrace{\max(-F_r, 0)}_{a_R}
+$$
+
+可以看到$a_P$和$a_R, \, a_L$有一定关系，即：
+
+$$
+\max(F_r, 0) + \max(-F_l, 0) = [\max(-F_r, 0) + F_r] + [\max(F_l, 0) - F_l] \\
+a_P = (a_R + F_r) + (a_L - F_l)
+$$
+
+这里利用到了[Co-Located SIMPLE.md](./Co-Located SIMPLE.md)中“对流项一阶迎风的另一种表达”中给出的关系。
+
+- 左边界
+
+$$
+F_r T_R - F_l T_L = \\ 
+\left[T_P \max(F_r, 0) - T_R \max(-F_r, 0)\right] - \left[T_A \max(F_l, 0) - T_P \max(-F_l, 0)\right] = 0 \\
+\Downarrow\\
+T_P\underbrace{\left[\max(F_r, 0) + \max(-F_l, 0)\right]}_{a_P} = T_A \max(F_l, 0) + T_R \underbrace{\max(-F_r, 0)}_{a_R}
+$$
+
+由于$T_L$被边界值$T_A$取代了，$a_L=0$，$a_P$和$a_R, \, a_L$的关系可以表示为：
+
+$$
+a_P = (a_R + F_r) + (\max(F_l, 0) - F_l) \\
+= (a_R + F_r) + (\underbrace{a_L}_{=0} - F_l) \underbrace{-S_p}_{=\max(F_l, 0)}
+$$
+
+其中：
+
+$$
+-S_p = \max(F_l, 0)
+$$
+
+写成这种形式是为了和内部点形式保持一致。
+
+- 右边界
+
+$$
+F_r T_R - F_l T_L = \\
+\left[T_P \max(F_r, 0) - T_B \max(-F_r, 0)\right] - \left[T_L \max(F_l, 0) - T_P \max(-F_l, 0)\right] = 0 \\
+\Downarrow\\
+T_P\underbrace{[\max(F_r, 0) + \max(-F_l, 0)]}_{a_P} = T_L \underbrace{\max(F_l, 0)}_{a_L} + T_B \max(-F_r, 0)
+$$
+
+于是：
+
+$$
+a_P = (\max(-F_r, 0) + F_r) + (a_L - F_l) \\
+= (\underbrace{a_R}_{=0} + F_r) + (a_L - F_l) \underbrace{-S_p}_{=\max(-F_r, 0)}
+$$
+
+其中：
+
+$$
+-S_p = \max(-F_r, 0)
+$$
+
+## 一阶迎风格式用于动量方程边界
+
+- 左边界
+
+在处理动量方程边界条件的时候，和标量输运方程有些区别，对于$x$方向速度动量方程，仿照上面的推导方式有：
+
+$$
+F_r u_R - F_l u_L = \\ 
+\left[u_P \max(F_r, 0) - u_R \max(-F_r, 0)\right] - \rho u_{in}u_{in} = 0 \\
+\Downarrow\\
+u_P\underbrace{\max(F_r, 0)}_{a_P} = \rho u_{in}u_{in} + u_R \underbrace{\max(-F_r, 0)}_{a_R}
+$$
+
+因此：
+
+$$
+a_P = a_R + F_r + \underbrace{a_L}_{=0} - \underbrace{F_l}_{=0}
+$$
+
+可以看到动量边界并不会写成$F_l u_L = [u_A \max(F_l, 0) - u_P \max(-F_l, 0)]$这种形式，而是直接根据边界条件给定的。
+
 ## 狄拉克边界与黎曼边界
 
 前面使用的边界条件都是狄拉克边界条件，也即直接给定边界的值，黎曼边界条件则是给定梯度。
@@ -413,23 +568,29 @@ $$
 - 内部点
 
 回顾前面的内容，先给出内部点的离散方程：
+
 $$
 \left(k_{r} A_{r} \frac{T_{R}-T_{P}}{d_{P R}}\right)-\left(k_{l} A_{l} \frac{T_{P}-T_{L}}{d_{L P}}\right)+\bar{S} V=0
 $$
+
 归并同类项：
+
 $$
 \begin{array}{c}
 a_{p} T_{P}=a_{L} T_{L}+a_{R} T_{R}+S_{u} \\
 T_{P} \underbrace{\left(D_{l} A_{l}+D_{r} A_{r}+0\right)}_{a_{p}}=T_{L} \underbrace{\left(D_{l} A_{l}\right)}_{a_{L}}+T_{R} \underbrace{\left(D_{r} A_{r}\right)}_{a_{R}}+\underbrace{S V}_{S_{u}}
 \end{array}
 $$
+
 写成通式：
+
 $$
 \begin{aligned}
 a_{p} T_{P}=& \sum_{N} a_{N} T_{N}+S_{u} \\
 a_{p}=\sum_{N} \frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}| \quad & a_{N}=\frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}| \quad S_{u}=\bar{S} V
 \end{aligned}
 $$
+
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200729205916.png)
 
 注意前面推导的时候，由于网格是正交的，所以$|\hat{\boldsymbol{n}}| = 1$，但是如果网格非正交，绝对值就不一定是$1$了，因此通式中要保留这一项。
@@ -462,36 +623,45 @@ $$
 $$
 
 这里可以直接给出左边界的梯度：
+
 $$
 q=-k \frac{d T}{d x} n_{x} \quad\left[\mathrm{W} / \mathrm{m}^{2}\right]\\
 k_{r} A_{r}\left(\frac{T_{R}-T_{P}}{d_{P R}}\right)-q_{w} A_{l}+\bar{S} V=0
 $$
+
 **注意**：当$q$为正值的时候，表示热量流出控制体。
 
 归并同类项：
+
 $$
 \begin{aligned}
 a_{p} T_{p} &=a_{L} T_{L}+a_{R} T_{R}+S_{u} \\
 T_{P} \underbrace{\left(0+D_{r} A_{r}+0\right)}_{a_{P}} &=T_{L} \underbrace{(0)}_{a_{L}}+T_{R} \underbrace{\left(D_{r} A_{r}\right)}_{a_{R}}+\underbrace{-q_{w} A_{l}+\bar{S} V}_{S_{u}}
 \end{aligned}
 $$
+
 其中：
+
 $$
 \begin{array}{c}
 a_{L}=0 \quad a_{R}=D_{r} A_{r} \quad a_{p}=a_{L}+a_{R}-S_{p} \\
 S_{P}=0 \quad S_{u}=\bar{S} V-q_{w} A_{l}
 \end{array}
 $$
+
 写成通式：
+
 $$
 a_{p} T_{P}=\sum_{N} a_{N} T_{N}+S_{u} \\
 a_{p}=\left(\sum_{N} \frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}|\right) \quad a_{N}=\frac{k_{N} A_{N}}{\left|\boldsymbol{d}_{P N}\right|}|\hat{\boldsymbol{n}}| \quad S_{u}=\bar{S} V-q_{w} A_{l}
 $$
+
 和前面相同的是，边界网格左侧的$a_N=0$，与前面不同的是，边界不再对$S_p$有影响，只对$S_u$有影响。
 
 - 总结
 
 **Dirichlet Boundary Condition**:
+
 $$
 \begin{array}{lccccc}
 \hline
@@ -502,7 +672,9 @@ $$
 \hline
 \end{array}
 $$
+
 **Neumann Boundary Condition**:
+
 $$
 \begin{array}{lccccc}
 \hline
@@ -513,7 +685,9 @@ $$
 \hline
 \end{array}
 $$
+
 **Summation**:
+
 $$
 \begin{array}{lccc}
 \hline
@@ -524,12 +698,14 @@ $$
 \hline
 \end{array}
 $$
+
 总结起来就是：
 
 1. 两种边界条件的引入都会使得边界那个方向的$a_N=0$
-2. 狄拉克边界的引入会同时在$a_P$和$S_u$中引入不规则项
-3. 黎曼边界条件只会在$S_u$中引入不规则项
 
+2. 狄拉克边界的引入会同时在$a_P$和$S_u$中引入不规则项
+
+3. 黎曼边界条件只会在$S_u$中引入不规则项
 - 算例
 
 取自Fluid 101 Course 2，P17：
@@ -561,6 +737,7 @@ $$
 二维扩散，两种边界条件的系数如下：
 
 **Dirichlet Boundary Condition (2D)**:
+
 $$
 \begin{array}{lcccccc} 
 \hline
@@ -574,7 +751,9 @@ $$
 \hline
 \end{array}
 $$
+
 **Neumann Boundary Condition (2D)**:
+
 $$
 \begin{array}{lcccccc} 
 \hline
@@ -594,6 +773,7 @@ a_{p}=a_{L}+a_{R}+a_{T}+a_{B}-S_{p}
 $$
 
 **Summation Notation**:
+
 $$
 \begin{array}{lccc}
 \hline
@@ -604,7 +784,9 @@ $$
 \hline
 \end{array}
 $$
+
 为了对比说明，将前面一维对流-扩散也放在这里：
+
 $$
 \begin{array}{cccc} 
 \hline
@@ -631,15 +813,13 @@ $$
 
 从上面表格中可以总结这样一个规律：
 
-内部点只会引入系数$a_P和a_N$，**对流项**引入$a_N$为$\max(F, 0)$相关系数，引入$a_P=a_{L}+a_{R}+...\left(F_{r}-F_{l}\right)+$$...-S_p$，**扩散项**引入$a_N$的为$DA$相关系数，引入$a_{p}=a_{L}+a_{R}+...-S_p$；
+内部点只会引入系数$a_P和a_N$，**对流项**引入$a_N$为$\max(F, 0)$相关系数，引入$a_P=a_{L}+a_{R}+...\left(F_{r}-F_{l}\right)+$ $...-S_p$，**扩散项**引入$a_N$的为$DA$相关系数，引入$a_{p}=a_{L}+a_{R}+...-S_p$；
 
 狄拉克边界不会引入$a_N$，**对流项**会引入$S_P=-\max(F,0)$相关量，$S_u=T_N(\max(F,0))$相关量，**扩散项**会引入$S_P=-2DA$和$S_u=T_N(2DA)$。也就是说，对于壁面网格，靠壁面那一侧的$a_N$系数为$0$，被替换为$-S_p$，并且还会引入源项$S_u$，最终对流项和扩散项的$a_P$与内部点形式相同，只需要注意边界那一侧的$a_N=0$，$-S_p$被额外引入；
 
 黎曼边界同样也不会引入$a_N$，同时也不会引入$S_p$，只会额外引入源项$S_u$；
 
 源项只会引入$S_u$。
-
-
 
 由于紧邻壁面的网格需要特殊处理，因此程序中`Mesh`类里封装了一些函数如`is_at_left_boundary`等用来判断网格是否为边壁网格；还分装了如`bottom_of`用来返回当前网格周围网格的编号。
 
@@ -748,11 +928,14 @@ int main(int argc, char** argv)
 ## 动量方程简化
 
 二维动量方程（$X$方向和$Y$方向）完整形式为：
+
 $$
 \frac{\partial(\rho u)}{\partial t}+\frac{\partial(\rho u u)}{\partial x}+\frac{\partial(\rho v u)}{\partial y}=-\frac{\partial p}{\partial x}+\frac{\partial}{\partial x}\left(2 \mu \frac{\partial u}{\partial x}+\lambda \nabla \cdot \bar{u}\right)+\frac{\partial}{\partial y}\left[\mu\left(\frac{\partial u}{\partial y}+\frac{\partial v}{\partial x}\right)\right] \\
 \frac{\partial(\rho v)}{\partial t}+\frac{\partial(\rho u v)}{\partial x}+\frac{\partial(\rho v v)}{\partial y}=-\frac{\partial p}{\partial y}+\frac{\partial}{\partial x}\left[\mu\left(\frac{\partial u}{\partial y}+\frac{\partial v}{\partial x}\right)\right]+\frac{\partial}{\partial y}\left(2 \mu \frac{\partial v}{\partial y}+\lambda \nabla \cdot \bar{u}\right)
 $$
+
 将等号右侧提取出扩散项：
+
 $$
 \begin{aligned}
 \rho\left(\frac{\partial u}{\partial t}+u \frac{\partial u}{\partial x}+v \frac{\partial u}{\partial y}\right)=& \\
@@ -766,20 +949,26 @@ $$
 
 \end{aligned}
 $$
+
 考虑流体不可压，有连续性方程：
+
 $$
 \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0
 $$
+
 最终可以将动量方程简化为： 
+
 $$
 \frac{\partial(\rho u)}{\partial t}+\nabla \cdot(\rho \bar{u} u)=-\frac{\partial p}{\partial x}+\nabla \cdot(\mu \nabla u)+S x \\
 \frac{\partial(\rho v)}{\partial t}+\nabla \cdot(\rho \bar{u} v)=-\frac{\partial p}{\partial y}+\nabla \cdot(\mu \nabla v)+S y
 $$
+
 这里将分离出来的粘性项以外的项，视为源项$S_x, S_y$，这里取$0$。
 
 ## 输运方程统一形式
 
 可以看到，实际上动量方程可以看作是特殊的标量输运方程，输运对象是速度$u$和$v$，如果用统一形式来描述$X$方向动量方程、$Y$方向动量方程，能量输运方程，可以写成：
+
 $$
 \begin{aligned}
 \frac{\partial (\rho u \phi^u)}{\partial x} + \frac{\partial (\rho v \phi^u)}{\partial y} &= \frac{\partial}{\partial x}\left( \mu \frac{\partial \phi^u}{\partial x} \right) + \frac{\partial}{\partial y}\left( \mu \frac{\partial \phi^u}{\partial y} \right) + S^u \\
@@ -790,7 +979,9 @@ $$
 
 \end{aligned}
 $$
+
 其中：
+
 $$
 \begin{aligned}
 S^u &= -\frac{\partial p}{\partial x} \\
@@ -802,6 +993,7 @@ $$
 ## 输运方程离散
 
 将输运方程写成有限体积通量形式：
+
 $$
 \begin{aligned}
 
@@ -812,6 +1004,7 @@ $$
 \left(J_{e}^{T} A_e - J_{w}^{T} A_w\right) +\left(J_{n}^{T} A_n - J_{s}^{T} A_s\right) &=\bar{S}V \\
 \end{aligned}
 $$
+
 - $X$方向动量方程
 
 $$
@@ -824,7 +1017,9 @@ J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\part
 
 \end{aligned}
 $$
+
 离散形式：
+
 $$
 \begin{aligned}
 &\left[\phi_{O}^u \max \left(\rho_e u_e, 0\right)-\phi_{E}^u \max \left(-\rho_e u_e, 0\right)-\mu_{e} \frac{\phi_{E}^u-\phi_{O}^u}{\Delta x}\right] A_x\\
@@ -833,11 +1028,15 @@ $$
 -&\left[\phi_{S}^u \max \left(\rho_s v_s, 0\right)-\phi_{O}^u \max \left(-\rho_s v_s, 0\right)-\mu_{s} \frac{\phi_{O}^u-\phi_{S}^u}{\Delta y}\right] A_y=-\left(p_{e}-p_{w}\right) A_x = \frac{1}{2}\left(p_{W}-p_{E}\right) A_x
 \end{aligned}
 $$
+
 写成Link coefficient形式：
+
 $$
 a_O \phi_O^u = a_E \phi_E^u + a_W \phi_W^u + a_N \phi_N^u + a_S \phi_S^u + S^u
 $$
+
 其中：
+
 $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e u_e, 0\right) A_x+\frac{\mu_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e\\
@@ -848,13 +1047,17 @@ a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{u} &=\frac{1}{2}\left(p_{W}-p_{E}\right) A_x \\
 \end{aligned}
 $$
+
 - $Y$方向动量方程
 
 Link coefficient形式
+
 $$
 a_O \phi_O^v = a_E \phi_E^v + a_W \phi_W^v + a_N \phi_N^v + a_S \phi_S^v + S^v
 $$
+
 其中：
+
 $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e u_e, 0\right) A_x+\frac{\mu_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e\\
@@ -865,13 +1068,17 @@ a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{v} &=\frac{1}{2}\left(p_{S}-p_{N}\right) A_y
 \end{aligned}
 $$
+
 - 能量方程
 
 Link coefficient形式：
+
 $$
 a_O \phi_O^T = a_E \phi_E^T + a_W \phi_W^T + a_N \phi_N^T + a_S \phi_S^T + S^T
 $$
+
 其中：
+
 $$
 \begin{aligned}
 a_{E} &=\max \left(-\rho_e c_p u_e, 0\right) A_x+\frac{k_{e}}{\Delta x} A_x = \max(-F_e, 0) + DA_e \\
@@ -882,6 +1089,7 @@ a_{O} &=a_E+a_W+a_N+a_S+\left[F_e - F_w + F_n - F_s\right] \\
 S^{T} &= \bar{S}V
 \end{aligned}
 $$
+
 可以看到，输运方程的形式基本是一样的（动量方程只有压力项有区别），不同的只是输运对象。
 
 ## PWIM差值
@@ -889,25 +1097,43 @@ $$
 计算对流项的时候，需要知道网格面上的法向速度，在同位网格SIMPLE算法中，这个法向速度不能直接用网格中心点的平均值表示，否则会出现“棋盘问题”，需要用到PWIM差值得到法向速度。
 
 $X$方向法向速度：
+
 $$
 \begin{aligned}
 \hat{u}_{e} &=\frac{1}{2}\left(\hat{u}_{O}+\hat{u}_{E}\right)+\frac{1}{2} \frac{\left(p_{E}^{(k)}-p_{W}^{(k)}\right)}{\left.2 a_{O}\right|_{O}} A_x+\frac{1}{2} \frac{\left(p_{E E}^{(k)}-p_{O}^{(k)}\right)}{\left.2 a_{O}\right|_{E}} A_x-\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{E}^{(k)}-p_{O}^{(k)}\right)}{2} A_x \\
 \end{aligned}
 $$
+
+或：
+
+$$
+\hat{u}_{e}=\frac{1}{2}\left(\hat{u}_{O}+\hat{u}_{E}\right)+\frac{1}{2} \Delta x \Delta y\left[\left.\frac{1}{\left.A_{O}\right|_{O}} \frac{\partial p^{(k)}}{\partial x}\right|_{O}+\left.\frac{1}{\left.A_{O}\right|_{E}} \frac{\partial p^{(k)}}{\partial x}\right|_{E}-\left.\left(\frac{1}{\left.A_{O}\right|_{E}}+\frac{1}{\left.A_{O}\right|_{O}}\right) \frac{\partial p^{(k)}}{\partial x}\right|_{e}\right]
+$$
+
 $Y$方向法向速度：
+
 $$
 \begin{aligned}
 \hat{v}_{n} &=\frac{1}{2}\left(\hat{v}_{O}+\hat{v}_{N}\right)+\frac{1}{2} \frac{\left(p_{N}^{(k)}-p_{S}^{(k)}\right)}{\left.2 a_{O}\right|_{O}} A_y+\frac{1}{2} \frac{\left(p_{N N}^{(k)}-p_{O}^{(k)}\right)}{\left.2 a_{O}\right|_{N}} A_y-\left[\frac{1}{\left.a_{O}\right|_{N}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{N}^{(k)}-p_{O}^{(k)}\right)}{2} A_y\\
 \end{aligned}
 $$
 
+或：
+
+$$
+\hat{v}_{n}=\frac{1}{2}\left(\hat{v}_{O}+\hat{v}_{N}\right)+\frac{1}{2} \Delta x \Delta y\left[\left.\frac{1}{\left.A_{O}\right|_{O}} \frac{\partial p^{(k)}}{\partial y}\right|_{O}+\left.\frac{1}{\left.A_{O}\right|_{N}} \frac{\partial p^{(k)}}{\partial y}\right|_{N}-\left.\left(\frac{1}{\left.A_{O}\right|_{N}}+\frac{1}{\left.A_{O}\right|_{O}}\right) \frac{\partial p^{(k)}}{\partial y}\right|_{n}\right]
+$$
+
 ## 压力、速度修正
 
 由于SIMPLE算法需要对方程组的解反复修正，需要求解压力修正方程：
+
 $$
 a_{O}^{p} p_{O}^{\prime} = a_{E}^{p} p_{E}^{\prime}+a_{W}^{p} p_{W}^{\prime}+a_{N}^{p} p_{N}^{\prime}+a_{S}^{p} p_{S}^{\prime} + S^{p}
 $$
+
 其中：
+
 $$
 \begin{aligned}
 a_{E}^{p} &=\frac{\rho_{e}(A_x)^{2}}{2}\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right], \quad 
@@ -918,32 +1144,39 @@ a_O^p &= a_E^p + a_W^p + a_N^p + a_S^p \\
 S^{p} &=-\left[\left(\rho_{e} \hat{u}_{e}-\rho_{w} \hat{u}_{w}\right) A_x+\left(\rho_{n} \hat{v}_{n}-\rho_{s} \hat{v}_{s}\right) A_y\right]=-\dot{m}_\text{imbalance}
 \end{aligned}
 $$
+
 得到压力修正量以后，可以分别修正速度cell value和face value：
 
 - cell value修正
-  $$
-  u_{O}^{\prime}=\frac{\left(p_{W}^{\prime}-p_{E}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_x \quad \text { and } \quad v_{O}^{\prime}=\frac{\left(p_{S}^{\prime}-p_{N}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_y
-  $$
+
+$$
+u_{O}^{\prime}=\frac{\left(p_{W}^{\prime}-p_{E}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_x \quad \text { and } \quad v_{O}^{\prime}=\frac{\left(p_{S}^{\prime}-p_{N}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_y
+$$
+
   于是下一个outer iteration的值为：
-  $$
-  p_{O}^{(k+1)}=p_{O}^{(k)}+\omega_{p} p_{O}^{\prime} \\
-  
+
+$$
+p_{O}^{(k+1)}=p_{O}^{(k)}+\omega_{p} p_{O}^{\prime} \\
+
   u_{O}^{(k+1)}=\hat{u}_{O}+\omega_{u v} u_{O}^{\prime}=\hat{u}_{O}+\omega_{u w} \frac{\left(p_{W}^{\prime}-p_{E}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_x \\
-  
+
   v_{O}^{(k+1)}=\hat{v}_{O}+\omega_{u v} v_{O}^{\prime}=\hat{v}_{O}+\omega_{u w} \frac{\left(p_{S}^{\prime}-p_{N}^{\prime}\right)}{\left.2 a_{O}\right|_{O}} A_y
-  $$
+$$
 
 - face value修正
-  $$
-  u_{e}^{\prime}=\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{E}^{\prime}\right)}{2} A_x \\
+
+$$
+u_{e}^{\prime}=\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{E}^{\prime}\right)}{2} A_x \\
   v_{n}^{\prime}=\left[\frac{1}{\left.a_{O}\right|_{N}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{N}^{\prime}\right)}{2} A_y
-  $$
+$$
+
   于是，下一个outer iteration的值为：
-  $$
-  u_{e}^{(k+1)}=\hat{u}_{e}+\omega_{uv} u_{e}^{\prime}=\hat{u}_{e}+\omega_{uv}\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{E}^{\prime}\right)}{2} A_x \\
-  
+
+$$
+u_{e}^{(k+1)}=\hat{u}_{e}+\omega_{uv} u_{e}^{\prime}=\hat{u}_{e}+\omega_{uv}\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{E}^{\prime}\right)}{2} A_x \\
+
   v_{n}^{(k+1)}=\hat{v}_{n}+\omega_{uv} v_{n}^{\prime}=\hat{v}_{n}+\omega_{uv}\left[\frac{1}{\left.a_{O}\right|_{N}}+\frac{1}{\left.a_{O}\right|_{O}}\right] \frac{\left(p_{O}^{\prime}-p_{N}^{\prime}\right)}{2} A_y
-  $$
+$$
 
 ## 动量方程边界
 
@@ -952,6 +1185,7 @@ $$
 - $X$方向动量方程
 
 通量原始形式：
+
 $$
 \begin{aligned}
 
@@ -961,7 +1195,9 @@ $$
 
 \end{aligned}
 $$
+
 考虑东、西、北、南四个方向壁面的通量（$\phi^u = u$）：
+
 $$
 \begin{aligned}
 
@@ -975,49 +1211,56 @@ J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\part
 
 \end{aligned}
 $$
+
 壁面方向压力，粘度：
+
 $$
 p_e \approx p_O, \quad \mu_e \approx \mu_O \\
 p_w \approx p_O, \quad \mu_w \approx \mu_O \\
 p_n \approx p_O, \quad \mu_n \approx \mu_O \\
 p_s \approx p_O, \quad \mu_s \approx \mu_O \\
 $$
+
 Link coefficient形式：
+
 $$
-\text{East wall:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{East wall:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{West wall:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{West wall:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North wall:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North wall:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South wall:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South wall:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{East wall:}\quad S^u = \left(\frac{p_W + p_O}{2} - p_O \right)A_x = \left(\frac{p_W - p_O}{2} \right)A_x\\
 \text{West wall:}\quad S^u = \left(p_O - \frac{p_O + p_E}{2} \right)A_x = \left(\frac{p_O - p_E}{2} \right)A_x
 $$
+
 **注意**：边界系数有叠加效果，例如，某个网格左侧和顶部都是壁面，则这个网格的$a_W = 0, a_N = 0$，其他系数也会叠加。
 
 - $Y$方向动量方程
 
 Link Coefficient形式（$\phi^v = v$）：
+
 $$
-\text{East wall:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{East wall:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{West wall:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{West wall:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North wall:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North wall:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South wall:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South wall:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O v_O = (a_E-S_E) v_E + (a_W-S_W) v_W + (a_N-S_N) v_N + (a_S-S_S) v_S + S^v + S_u \\
 
 \text{North wall:}\quad S^v = \left(\frac{p_S + p_O}{2} - p_O \right)A_y = \left(\frac{p_S - p_O}{2} \right)A_y\\
 \text{South wall:}\quad S^v = \left( p_O - \frac{p_O + p_N}{2} \right)A_y = \left(\frac{p_O - p_N}{2} \right)A_y
 $$
+
 求解$X$方向动量方程与$Y$方向动量方程，唯一的区别就是压力项，其他的系数都是一样的。
 
 ### Inlet (Fixed Velocity)
@@ -1025,6 +1268,7 @@ $$
 - $X$方向动量方程
 
 与上面类似，考虑东、西、北、南四个方向入口的通量（$\phi^u = u$）：
+
 $$
 \begin{aligned}
 
@@ -1042,24 +1286,28 @@ J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\part
 
 \end{aligned}
 $$
+
 速度入口压力、粘度：
+
 $$
 p_e \approx p_O, \quad \mu_e \approx \mu_O \\
 p_w \approx p_O, \quad \mu_w \approx \mu_O \\
 p_n \approx p_O, \quad \mu_n \approx \mu_O \\
 p_s \approx p_O, \quad \mu_s \approx \mu_O \\
 $$
+
 Link coefficient形式：
+
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{East in:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
+\text{West in:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_x\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{North in:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
+\text{South in:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}u_{in} + \frac{8\mu_O u_{in}}{3\Delta x}A_y\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{East in:}\quad S^u = \left(\frac{p_W + p_O}{2} - p_O \right)A_x = \left(\frac{p_W - p_O}{2} \right)A_x\\
@@ -1069,16 +1317,17 @@ $$
 - $Y$方向动量方程
 
 Link Coefficient形式（$\phi^v = v$）：
+
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
+\text{East in:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = -\rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
+\text{West in:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \frac{3\mu_O}{\Delta x}A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = \rho_{in}u_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_x\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
+\text{North in:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = -\rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
+\text{South in:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \frac{3\mu_O}{\Delta y}A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = \rho_{in}v_{in}v_{in} + \frac{8\mu_O v_{in}}{3\Delta x}A_y\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O v_O = (a_E-S_E) v_E + (a_W-S_W) v_W + (a_N-S_N) v_N + (a_S-S_S) v_S + S^v + S_u \\
 
 \text{North in:}\quad S^v = \left(\frac{p_S + p_O}{2} - p_O \right)A_y = \left(\frac{p_S - p_O}{2} \right)A_y\\
@@ -1090,6 +1339,7 @@ $$
 - $X$方向动量方程
 
 考虑东、西、北、南四个方向压力入口的通量（$\phi^u = u$）：
+
 $$
 \begin{aligned}
 
@@ -1107,26 +1357,30 @@ J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\part
 
 \end{aligned}
 $$
+
 由于压力入口并没有给定速度，因此入口速度需要通过差值得到，这里入口边界速度采用一阶近似。
 
 压力入口压力、粘度：
+
 $$
 p_e = p_{in}, \quad \mu_e \approx \mu_O \\
 p_w = p_{in}, \quad \mu_w \approx \mu_O \\
 p_n = p_{in}, \quad \mu_n \approx \mu_O \\
 p_s = p_{in}, \quad \mu_s \approx \mu_O \\
 $$
+
 Link coefficient形式：
+
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{East in:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{West in:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{East in:}\quad S^u = \left(\frac{p_W + p_O}{2} - p_{in} \right)A_x \\
@@ -1136,16 +1390,17 @@ $$
 - $Y$方向动量方程
 
 Link coefficient形式（$\phi^v = v$）：
+
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{East in:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \left(\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_W = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
+\text{West in:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = \left(-\rho_O u_O + \frac{\mu_O}{3\Delta x}\right)A_x, \quad -S_E = \frac{\mu_O}{3\Delta x}A_x, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \left(\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_S = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = \left(-\rho_O v_O + \frac{\mu_O}{3\Delta y}\right)A_y, \quad -S_N = \frac{\mu_O}{3\Delta y}A_y, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O v_O = (a_E-S_E) v_E + (a_W-S_W) v_W + (a_N-S_N) v_N + (a_S-S_S) v_S + S^v + S_u \\
 
 \text{North in:}\quad S^v = \left(\frac{p_S + p_O}{2} - p_{in} \right)A_y \\
@@ -1157,6 +1412,7 @@ $$
 - $X$方向动量方程：
 
 考虑东、西、北、南四个方向压力出口的通量（$\phi^u = u$）：
+
 $$
 \begin{aligned}
 
@@ -1170,26 +1426,30 @@ J_{s}^{u} &=\rho_{s} v_{s} \phi^u_{s}-\left.\mu_{s} \frac{\partial \phi^u}{\part
 
 \end{aligned}
 $$
+
 忽略出口的粘性作用，并将出口速度近似为网格速度。
 
 出口压力：
+
 $$
 p_e = p_{out} \\
 p_w = p_{out} \\
 p_n = p_{out} \\
 p_s = p_{out} 
 $$
+
 Link coefficient形式：
+
 $$
-\text{East in:}\quad a_E = 0, \quad -S_O = \rho_O u_O A_x, \quad -S_W = 0, \quad S_u = 0\\
+\text{East in:}\quad a_E = 0, \quad F_e = 0, \quad -S_O = \rho_O u_O A_x, \quad -S_W = 0, \quad S_u = 0\\
 
-\text{West in:}\quad a_W = 0, \quad -S_O = -\rho_O u_O A_x, \quad -S_E = 0, \quad S_u = 0\\
+\text{West in:}\quad a_W = 0, \quad F_w = 0, \quad -S_O = -\rho_O u_O A_x, \quad -S_E = 0, \quad S_u = 0\\
 
-\text{North in:}\quad a_N = 0, \quad -S_O = \rho_O v_O A_y, \quad -S_S = 0, \quad S_u = 0\\
+\text{North in:}\quad a_N = 0, \quad F_n = 0, \quad -S_O = \rho_O v_O A_y, \quad -S_S = 0, \quad S_u = 0\\
 
-\text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O v_O A_y, \quad -S_N = 0, \quad S_u = 0\\
+\text{South in:}\quad a_S = 0, \quad F_s = 0, \quad -S_O = -\rho_O v_O A_y, \quad -S_N = 0, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{East out:}\quad S^u = \left(\frac{p_W + p_O}{2} - p_{out} \right)A_x \\
@@ -1199,6 +1459,7 @@ $$
 - $Y$方向动量方程
 
 Link coefficient形式：
+
 $$
 \text{East in:}\quad a_E = 0, \quad -S_O = \rho_O u_O A_x, \quad -S_W = 0, \quad S_u = 0\\
 
@@ -1208,7 +1469,7 @@ $$
 
 \text{South in:}\quad a_S = 0, \quad -S_O = -\rho_O v_O A_y, \quad -S_N = 0, \quad S_u = 0\\
 
-a_O = a_E + a_W + a_N + a_S - S_O\\
+a_O = a_E + a_W + a_N + a_S +\left[F_e - F_w + F_n - F_s\right] - S_O\\
 a_O u_O = (a_E-S_E) u_E + (a_W-S_W) u_W + (a_N-S_N) u_N + (a_S-S_S) u_S + S^u + S_u \\
 
 \text{North out:}\quad S^v = \left(\frac{p_S + p_O}{2} - p_{out} \right)A_x \\
@@ -1220,6 +1481,7 @@ $$
 ### Walls (No Slip)
 
 对于西边界：
+
 $$
 \begin{aligned}
 a_{E}^{p} &=\frac{\rho_{e}(A_x)^{2}}{2}\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right], \quad 
@@ -1231,11 +1493,13 @@ S^{p} &=-\left[\left(\rho_{e} \hat{u}_{e}\right) A_x+\left(\rho_{n} \hat{v}_{n}-
 a_{O}^{p} &p_{O}^{\prime} = a_{E}^{p} p_{E}^{\prime}+a_{W}^{p} p_{W}^{\prime}+a_{N}^{p} p_{N}^{\prime}+a_{S}^{p} p_{S}^{\prime} + S^{p}
 \end{aligned}
 $$
+
 其他边界类似，需要改变的是$a^p$和$S^p$。
 
 ### Inlet (Prescribed Velocity)
 
 对于西边界：
+
 $$
 \begin{aligned}
 a_{E}^{p} &=\frac{\rho_{e}(A_x)^{2}}{2}\left[\frac{1}{\left.a_{O}\right|_{E}}+\frac{1}{\left.a_{O}\right|_{O}}\right], \quad 
@@ -1247,11 +1511,13 @@ S^{p} &=-\left[\left(\rho_{e} \hat{u}_{e}-\rho_{in}u_{in}\right) A_x+\left(\rho_
 a_{O}^{p} &p_{O}^{\prime} = a_{E}^{p} p_{E}^{\prime}+a_{W}^{p} p_{W}^{\prime}+a_{N}^{p} p_{N}^{\prime}+a_{S}^{p} p_{S}^{\prime} + S^{p}
 \end{aligned}
 $$
+
 其他边界类似，和上面壁面边界不同的是，$S^p$中边界速度由$0$变为$u_{in}$。
 
 ### Outlet (Fixed Pressure)
 
 对于东边界：
+
 $$
 \begin{aligned}
 a_{E}^{p} &=0, \quad 
@@ -1265,6 +1531,7 @@ S^{p} &=-\left[\left(\rho_{e} \hat{u}_{e}-\rho_{w}\hat{u}_{w}\right) A_x+\left(\
 a_{O}^{p} &p_{O}^{\prime} = (a_{E}^{p}-S_E) p_{E}^{\prime}+(a_{W}^{p}-S_W) p_{W}^{\prime}+(a_{N}^{p}-S_N) p_{N}^{\prime}+(a_{S}^{p}-S_S) p_{S}^{\prime} + S^{p}
 \end{aligned}
 $$
+
 其他方向类似。
 
 ## 边界处PWIM修正
@@ -1274,13 +1541,16 @@ $$
 ### Inlet / Wall
 
 对于左侧速度入口 / 壁面：
+
 $$
 \begin{array}{ll}
 \text { Inlet: } & \hat{u}_{w}=u_{i n} \\
 \text { Wall: } & \hat{u}_{w}=0
 \end{array}
 $$
+
 此时右侧速度PWIM差值需要特殊处理：
+
 $$
 \hat{u}_{e}=\frac{1}{2}\left(\hat{u}_{O}+\hat{u}_{E}\right)+\frac{1}{2} \Delta x \Delta y\left[\left.\frac{1}{\left.A_{O}\right|_{O}} \frac{\partial p}{\partial x}\right|_{O}+\left.\frac{1}{\left.A_{O}\right|_{E}} \frac{\partial p}{\partial x}\right|_{E}-\left.\left(\frac{1}{\left.A_{O}\right|_{E}}+\frac{1}{\left.A_{O}\right|_{O}}\right) \frac{\partial p}{\partial x}\right|_{e}\right] \\
 \left.\frac{\partial p}{\partial x}\right|_{O}=\frac{p_{e}-p_{w}}{\Delta x}=\frac{1}{\Delta x}\left[\frac{p_{E}+p_{O}}{2}-p_{w}\right]
@@ -1289,15 +1559,17 @@ $$
 ### Outlet
 
 对于右侧出口：
+
 $$
 \hat{u}_{e}=\hat{u}_{O}
 $$
+
 此时左侧的PWIM差值为：
+
 $$
 \hat{u}_{w}=\frac{1}{2}\left(\hat{u}_{O}+\hat{u}_{W}\right)+\frac{1}{2} \Delta x \Delta y\left[\left.\frac{1}{\left.A_{O}\right|_{O}} \frac{\partial p}{\partial x}\right|_{O}+\left.\frac{1}{\left.A_{O}\right|_{W}} \frac{\partial p}{\partial x}\right|_{W}-\left.\left(\frac{1}{\left.A_{O}\right|_{W}}+\frac{1}{\left.A_{O}\right|_{O}}\right) \frac{\partial p}{\partial x}\right|_{w}\right]\\
 \left.\frac{\partial p}{\partial x}\right|_{O}=\frac{p_{e}-p_{w}}{\Delta x}=\frac{1}{\Delta x}\left[p_{{out}}-\frac{p_{W}+p_{O}}{2}\right]
 $$
-
 
 ## 算例
 
@@ -1318,7 +1590,5 @@ $$
 ### Backward Facing Step Problem
 
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200823152548.png)
-
-
 
 ![](https://md-pic-1259272405.cos.ap-guangzhou.myqcloud.com/img/20200823153443.png)
