@@ -3,3 +3,4 @@ build/
 .vscode/
 eigen-3.3.7/
 lib_eigen337/
+lib_json/

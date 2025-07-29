@@ -1,0 +1,13 @@
+{
+    "thermal_conductivity": 100.0,
+    "cross_sectional_area": 0.1,
+    "length": 5.0,
+    "number_of_cells": 5,
+    "temperature_left": 100.0,
+    "temperature_right": 200.0,
+    "heat_source": 1000.0,
+    "density": 1.0,
+    "specific_heat": 1000.0,
+    "fluid_velocity": 0.0,
+    "heat_flux_boundary": 100.0
+}
