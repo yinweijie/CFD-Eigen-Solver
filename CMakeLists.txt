@@ -23,6 +23,8 @@ find_package(nlohmann_json 3.12.0 REQUIRED)
 # 并将名称保存到 DIR_SRCS 变量
 aux_source_directory(. DIR_SRCS)
 
+add_subdirectory("version.1.1DDiffusion_POP")
+
 add_subdirectory("version.5.1DDiffusion-Neumann-Boundary")
 
 # add the executable
