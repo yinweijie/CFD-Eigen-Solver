@@ -33,10 +33,22 @@ void InputReader::loadInputs()
     Inputs::q_w = config.value("heat_flux_boundary", 100.0);
     
     // 输出读取的配置信息
-    std::cout << "配置读取完成:" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+    std::cout << "配置读取:" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
     std::cout << "热导率: " << Inputs::k << " W/mK" << std::endl;
     std::cout << "截面积: " << Inputs::A << " m²" << std::endl;
     std::cout << "长度: " << Inputs::L << " m" << std::endl;
     std::cout << "网格数: " << Inputs::N << std::endl;
+    std::cout << "左端温度: " << Inputs::T_A << " °C" << std::endl;
+    std::cout << "右端温度: " << Inputs::T_B << " °C" << std::endl;
+    std::cout << "单位体积热源: " << Inputs::S_bar << " W/m³" << std::endl;
+    std::cout << "密度: " << Inputs::rho << " kg/m³" << std::endl;
+    std::cout << "比热容: " << Inputs::cp << " J/kg/K" << std::endl;
+    std::cout << "流体速度: " << Inputs::U << " m/s" << std::endl;
+    std::cout << "左边界热流密度: " << Inputs::q_w << " W/m²" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+    std::cout << "配置文件加载成功。" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
     std::cout << std::endl;
 }

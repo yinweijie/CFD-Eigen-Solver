@@ -31,6 +31,12 @@ cd CFD-Eigen-Solver
 wget https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
 ```
 
+下载nlohmann/json库
+
+```bash
+git clone --branch v3.12.0 https://github.com/nlohmann/json.git
+```
+
 编译Eigen：
 
 ```bash
@@ -43,6 +49,19 @@ cmake -DCMAKE_BUILD_TYPE=release \
       ..
 make -j
 make check
+make install
+```
+
+编译nlohmann/json库
+
+```bash
+cd json/
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=release \
+      -DCMAKE_INSTALL_PREFIX=../../lib_json \
+      ..
+make -j6
 make install
 ```
 
