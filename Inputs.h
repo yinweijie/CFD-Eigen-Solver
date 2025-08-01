@@ -2,6 +2,7 @@
 #define __INPUTS_H__
 
 #include <string>
+#include <nlohmann/json.hpp>
 
 struct Geometry
 {
@@ -9,6 +10,9 @@ struct Geometry
     double XLen;
     double YLen;
     double ZLen;
+    int Nx;
+    int Ny;
+    int Nz;
 };
 
 struct PhysicalPropterties
@@ -62,9 +66,6 @@ class Inputs
 {
 public:
     
-    // Number of cells in the mesh
-    int Nx, Ny, Nz;
-
     Geometry geometry;
 
     // 物性
@@ -77,11 +78,12 @@ public:
     Source source;
 
 public:
-    // To do ...
-    // 读取Inputs.dat中数据，给Inputs中数据赋值
-    Inputs(const std::string& FileName);
+    Inputs(const std::string& fileName);
 
-    void initInputs();
+    void loadInputs();
+
+private:
+    nlohmann::json config;
 };
 
 #endif

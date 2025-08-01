@@ -20,7 +20,7 @@ using namespace std;
 int main()
 {
     // 读取数据
-    Inputs* inputs = new Inputs("Inputs.dat");
+    Inputs* inputs = new Inputs("config.json");
 
     // 创建网格
     Mesh* mesh = new Mesh(inputs);
@@ -49,14 +49,14 @@ int main()
 
     //=============================== Start Outer Loop Iteration ================================//
 
-    double tol_outer = 1.e-10;
+    // double tol_outer = 1.e-10;
     double tol_inner = 1.e-3;
-    double relax_momentum = 0.8;
-    double relax_pressure = 0.2;
+    // double relax_momentum = 0.8;
+    // double relax_pressure = 0.2;
 
     double res_u = 0.0;
     double res_v = 0.0;
-    double res_p = 0.0;
+    // double res_p = 0.0;
 
     PWIM pwim(inputs, field, mesh, xMatrixCoeff, yMatrixCoeff);
 

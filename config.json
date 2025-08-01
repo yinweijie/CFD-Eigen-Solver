@@ -1,0 +1,35 @@
+{
+    "geometry": {
+        "XLen": 1,
+        "YLen": 1,
+        "ZLen": 1 
+    },
+    "physcial_properties": {
+        "k": 100,
+        "rho": 1.0,
+        "cp": 1000,
+        "mu": 0.01
+    },
+    "boundary": {
+        "T_left": 100,
+        "T_right": 200,
+        "T_bottom": 250,
+        "T_top": 150,
+        "q_w": 100,
+        "U_left": 0.0,
+        "U_right": 0.0,
+        "U_top": 0.01,
+        "U_bottom": 0.0,
+        "V_left": 0.0,
+        "V_right": 0.0,
+        "V_top": 0.0,
+        "V_bottom": 0.0,
+        "p_left": 0.0,
+        "p_right": 0.0,
+        "p_top": 0.0,
+        "p_bottom": 0.0
+    },
+    "source": {
+        "S_bar": 1000
+    }
+}

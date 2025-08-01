@@ -34,7 +34,11 @@ private:
     void initMesh(const Inputs* inputs);
 
 public:
-    Mesh(const Inputs* inputs) : Nx(inputs->Nx), Ny(inputs->Ny), Nz(inputs->Nz), N(Nx*Ny*Nz)
+    Mesh(const Inputs* inputs) 
+        : Nx(inputs->geometry.Nx), 
+          Ny(inputs->geometry.Ny), 
+          Nz(inputs->geometry.Nz), 
+          N(Nx*Ny*Nz)
     {
         xFace = VectorXd(Nx + 1);
         yFace = VectorXd(Ny + 1);
