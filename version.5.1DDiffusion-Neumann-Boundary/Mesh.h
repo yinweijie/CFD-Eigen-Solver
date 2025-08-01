@@ -32,8 +32,9 @@ private:
     // 初始化网格
     void initMesh(double L, int N);
 public:
-    Mesh(double L, int N) : N(N)
+    Mesh(double L, int N_)
     {
+        N = N_;
         xFace = VectorXd(N + 1);
         xCentroid = VectorXd(N);
         d_LP = VectorXd(N);
