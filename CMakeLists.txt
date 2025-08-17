@@ -32,6 +32,10 @@ add_subdirectory("version.1.1DDiffusion_POP")
 
 add_subdirectory("version.2.1DDiffusion_OOP")
 
+add_subdirectory("version.3.1DDiffusion-Convection")
+
+add_subdirectory("version.4.1DDiffusion-Convection-Upwind")
+
 add_subdirectory("version.5.1DDiffusion-Neumann-Boundary")
 
 # add the executable
