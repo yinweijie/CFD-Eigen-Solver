@@ -14,7 +14,7 @@ namespace Inputs
     double rho = 1.0;
     double cp = 1000.0;
     double U = 0.0;
-    double q_w = 100.0;
+    double q_w = -100.0;
 }
 
 void InputReader::loadInputs()

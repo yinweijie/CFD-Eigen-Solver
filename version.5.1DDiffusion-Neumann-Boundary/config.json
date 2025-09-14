@@ -9,5 +9,5 @@
     "density": 1.0,
     "specific_heat": 1000.0,
     "fluid_velocity": 0.0,
-    "heat_flux_boundary": 100.0
+    "heat_flux_boundary": -100.0
 }

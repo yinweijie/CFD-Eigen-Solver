@@ -70,7 +70,7 @@ inline void MatrixCoeff::initMatrix(const Mesh* mesh)
     aP = aL + aR - Sp + (F_r - F_l);
 
     Su = S_bar * V;
-    Su[0] = /*T_A*(2*DA_L[0] + max(F_l[0], 0.0))*/-q_w*A  + S_bar * V[0]; // 左边界使用黎曼边界条件
+    Su[0] = /*T_A*(2*DA_L[0] + max(F_l[0], 0.0))*/q_w*A  + S_bar * V[0]; // 左边界使用黎曼边界条件
     Su[N-1] = T_B*(2*DA_R[N-1] + max(-F_r[N-1], 0.0)) + S_bar * V[N-1]; // 右边界用狄拉克边界条件
 
     for(int i = 0; i < N; i++)
